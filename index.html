@@ -33,7 +33,7 @@
       </div>
     </div>
 
-    <!-- 1. 로그인 / 닉네임 설정 스크린 (도전자 호칭 적용) -->
+    <!-- 1. 로그인 / 닉네임 설정 스크린 -->
     <section id="loginScreen" class="screen active">
       <div class="login-box">
         <h2>🏯 한글 수호대 입궁 📜</h2>
@@ -172,25 +172,25 @@
       </div>
     </section>
 
-    <!-- 6. 세종대왕 보스전 대결 화면 -->
+    <!-- 6. 세종대왕 보스전 대결 화면 (밝고 고급스러운 궁궐 테마 & 중앙 정렬) -->
     <section id="bossScreen" class="screen">
       <div class="boss-battle-screen">
         <div class="boss-avatar-box">
           <img src="assets/king_sejong.jpg" alt="세종대왕" class="boss-avatar-img">
-          <h2 style="font-family: var(--font-calligraphy); color: var(--color-gold); font-size: 2.8rem; margin-top: 8px;">세종대왕과의 맞춤법 결투</h2>
+          <h2>세종대왕과의 맞춤법 결투</h2>
         </div>
 
         <div class="boss-dialogue">
           <p id="bossSpeech">"훈민정음 5개 토큰(ㄱ,ㄴ,ㄷ,ㄹ,ㅁ)을 모아 나에게 도전하다니 대견하구나! 과연 10문제를 모두 맞혀 훈민정음 마스터가 될 수 있겠느냐?"</p>
         </div>
 
-        <div class="game-header" style="background: rgba(0,0,0,0.6); color:#FFF; border-color: var(--color-gold);">
+        <div class="game-header boss-status-header">
           <div>문제 <span id="bossQIndex">1</span> / 10</div>
-          <div class="timer-box" style="color: #F1C40F;">⏱️ 남은시간: <span id="bossTimer">10</span>초</div>
+          <div class="timer-box">⏱️ 남은시간: <span id="bossTimer">10</span>초</div>
           <div>맞힌 문제: <span id="bossScore">0</span> / 10</div>
         </div>
 
-        <div id="bossQuestionText" style="font-size: 1.35rem; margin: 20px 0; text-align: center; color: #FFF8E7; font-weight:700;">
+        <div id="bossQuestionText" class="boss-question-card">
           질문 로딩 중...
         </div>
 
@@ -200,7 +200,7 @@
       </div>
     </section>
 
-    <!-- 7. 훈민정음 명예의 전당 스크린 (도전자 닉네임 표기) -->
+    <!-- 7. 훈민정음 명예의 전당 스크린 -->
     <section id="hallScreen" class="screen">
       <div class="hall-container">
         <h2 style="font-family: var(--font-calligraphy); text-align: center; margin-bottom: 16px; color: var(--color-brown-dark); font-size: 2.8rem;">

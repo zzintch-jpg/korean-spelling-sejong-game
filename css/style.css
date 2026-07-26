@@ -109,7 +109,7 @@ h1.game-title {
   font-weight: 400;
 }
 
-/* 유저 정보 바 ('도전자:' 와 닉네임 글자 크기 100% 일치) */
+/* 유저 정보 바 */
 .user-bar {
   background: linear-gradient(to right, #F8F9FA, #F1F3F5);
   padding: 14px 36px;
@@ -649,56 +649,90 @@ h1.game-title {
   background: #FFE8CC;
 }
 
-/* 세종대왕 보스전 프리미엄 스크린 */
+/* 👑 세종대왕 보스전 화사하고 고급스러운 궁궐 테마 & 세종대왕 원형 사진 가운데 정렬 */
 .boss-battle-screen {
-  background: linear-gradient(to bottom, #1C2541, #0B132B);
-  color: #FFF;
+  background: linear-gradient(135deg, #FFFDF9 0%, #F5EFE0 100%);
+  color: var(--color-text-dark);
   width: 100%;
   height: 100%;
   border-radius: 24px;
-  padding: 40px;
+  border: 4px solid var(--color-gold-primary);
+  padding: 44px 36px;
   display: flex;
   flex-direction: column;
   align-items: center;
+  box-shadow: var(--shadow-premium);
+}
+
+.boss-avatar-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  margin-bottom: 24px;
+  width: 100%;
+}
+
+.boss-avatar-img {
+  width: 160px;
+  height: 160px;
+  border-radius: 50%;
+  border: 5px solid var(--color-gold-bright);
+  box-shadow: 0 10px 30px rgba(197, 160, 89, 0.45);
+  object-fit: cover;
+  margin: 0 auto 16px auto;
+  display: block;
 }
 
 .boss-avatar-box h2 {
   font-family: var(--font-straight);
-  color: var(--color-gold-bright);
+  color: #1C2541;
   font-size: 3.2rem;
-  margin-top: 12px;
-  letter-spacing: 1px;
-}
-
-.boss-avatar-img {
-  width: 140px;
-  height: 140px;
-  border-radius: 50%;
-  border: 5px solid var(--color-gold-bright);
-  box-shadow: 0 0 35px rgba(243, 198, 35, 0.6);
-  object-fit: cover;
+  letter-spacing: 1.5px;
+  text-shadow: 0 2px 6px rgba(0,0,0,0.08);
 }
 
 .boss-dialogue {
-  background: rgba(255, 255, 255, 0.1);
-  border: 2px solid var(--color-gold-primary);
-  border-radius: 18px;
-  padding: 22px 36px;
-  font-size: 1.55rem;
-  color: #F8F9FA;
-  margin-bottom: 26px;
+  background: #FFFFFF;
+  border: 3px solid var(--color-gold-primary);
+  border-radius: 20px;
+  padding: 24px 40px;
+  font-size: 1.65rem;
+  color: #1E2022;
+  margin-bottom: 28px;
   text-align: center;
-  max-width: 850px;
+  max-width: 900px;
+  width: 100%;
   font-family: var(--font-straight);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.06);
 }
 
-#bossQuestionText {
-  font-family: var(--font-straight);
-  font-size: 2.3rem;
-  margin: 26px 0;
-  text-align: center;
+.boss-status-header {
+  background: #1C2541;
   color: #FFF;
+  border: 2px solid var(--color-gold-primary);
+  font-size: 1.5rem;
+}
+
+.boss-status-header .timer-box {
+  color: var(--color-gold-bright);
+}
+
+.boss-question-card {
+  font-family: var(--font-straight);
+  font-size: 2.6rem;
+  margin: 28px 0;
+  text-align: center;
+  color: #1C2541;
   font-weight: 700;
+  background: #FFFFFF;
+  padding: 32px 40px;
+  border-radius: 20px;
+  border: 3px dashed var(--color-gold-primary);
+  width: 100%;
+  max-width: 900px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.05);
 }
 
 .boss-options {
@@ -706,25 +740,29 @@ h1.game-title {
   flex-direction: column;
   gap: 18px;
   width: 100%;
-  max-width: 800px;
+  max-width: 900px;
 }
 
 .boss-opt-btn {
   font-family: var(--font-straight);
-  padding: 22px 32px;
-  font-size: 1.7rem;
-  border: 2px solid var(--color-gold-primary);
-  border-radius: 18px;
-  background: rgba(0,0,0,0.5);
-  color: #FFF;
+  padding: 24px 36px;
+  font-size: 1.8rem;
+  font-weight: 700;
+  border: 3px solid #E8E2D5;
+  border-radius: 20px;
+  background: #FFFFFF;
+  color: #1C2541;
   cursor: pointer;
   text-align: left;
   transition: all 0.25s ease;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.05);
 }
 
 .boss-opt-btn:hover {
-  background: rgba(197, 160, 89, 0.3);
-  transform: translateX(6px);
+  background: #FFFDF9;
+  border-color: var(--color-gold-primary);
+  transform: translateX(8px);
+  box-shadow: 0 10px 24px rgba(197, 160, 89, 0.25);
 }
 
 /* 🏛️ 명예의 전당 */
