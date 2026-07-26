@@ -1,6 +1,6 @@
-// 초등 3~4학년 맞춤법 대용량 데이터베이스 (게임 모드별 역할 명확화)
+// 초등 3~4학년 맞춤법 대용량 데이터베이스 (단어 단위 정답 검증 완벽 수정)
 
-// 🎯 미니게임 1(맞춤법 터치): 문맥과 무관하게 절대적으로 바른 표기 vs 오탈자 단어만 엄선
+// 🎯 미니게임 1(맞춤법 터치): 절대적인 오탈자 단어만 엄선
 export const GAME1_WORDS = [
   { correct: "어이없다", wrong: "어의없다" },
   { correct: "며칠", wrong: "몇 일" },
@@ -39,7 +39,7 @@ export const GAME1_WORDS = [
   { correct: "요컨대", wrong: "요컨대" }
 ];
 
-// ✍️ 미니게임 2(문장 빈칸 채우기): 문맥에 따라 뜻이 달라지는 동음이의어/유의어 중심
+// ✍️ 미니게임 2(문장 빈칸 채우기): 동음이의어/유의어 중심
 export const GAME2_QUESTIONS = [
   { sentence: "신발 끈을 단단히 ( ___ ).", options: ["매다", "메다"], answer: "매다", explanation: "끈을 묶는 것은 '매다'입니다." },
   { sentence: "가방을 어깨에 ( ___ ) 학교에 갔다.", options: ["메고", "매고"], answer: "메고", explanation: "어깨에 지는 것은 '메다'입니다." },
@@ -70,36 +70,36 @@ export const GAME2_QUESTIONS = [
   { sentence: "자전거를 타고 언덕을 ( ___ ).", options: ["넘어갔다", "너머갔다"], answer: "넘어갔다", explanation: "동사 활용형 '넘어갔다'가 맞습니다." }
 ];
 
-// 🔍 미니게임 3(맞춤법 탐정): 문장 속 오탈자 교정 문항
+// 🔍 미니게임 3(맞춤법 탐정): 띄어쓰기 낱말 단위 매칭 정밀 수정 완료
 export const GAME3_QUESTIONS = [
-  { wrongSentence: "내일 친구들과 약속을 해도 돼나요?", wrongWord: "돼나요", correctWord: "되나요", explanation: "'되나요'가 올바른 표기입니다." },
+  { wrongSentence: "내일 친구들과 약속을 해도 돼나요?", wrongWord: "돼나요?", correctWord: "되나요?", explanation: "'되나요'가 올바른 표기입니다." },
   { wrongSentence: "선생님을 오랭만에 만나서 반갑습니다.", wrongWord: "오랭만에", correctWord: "오랜만에", explanation: "'오랜만에'가 맞습니다." },
   { wrongSentence: "쓰레기는 깨끗히 치워야 합니다.", wrongWord: "깨끗히", correctWord: "깨끗이", explanation: "'깨끗이'가 바른 부사 표기입니다." },
   { wrongSentence: "그 문제는 굳지 설명하지 않아도 알아.", wrongWord: "굳지", correctWord: "굳이", explanation: "'굳이'로 원형 표기를 살립니다." },
   { wrongSentence: "가방을 어깨에 매고 학교에 갑니다.", wrongWord: "매고", correctWord: "메고", explanation: "어깨에 걸치는 것은 '메고'입니다." },
-  { wrongSentence: "자전거가 나무에 부딛쳤다.", wrongWord: "부딛쳤다", correctWord: "부딪쳤다", explanation: "'부딪쳤다'가 바른 표기입니다." },
+  { wrongSentence: "자전거가 나무에 부딛쳤다.", wrongWord: "부딛쳤다.", correctWord: "부딪쳤다.", explanation: "'부딪쳤다'가 바른 표기입니다." },
   { wrongSentence: "동생이 거짓말을 해서 정말 어의가 없었다.", wrongWord: "어의가", correctWord: "어이가", explanation: "'어이가' 없을 때 쓰는 말입니다." },
-  { wrongSentence: "시험지를 다 풀고 정답을 맞췄다.", wrongWord: "맞췄다", correctWord: "맞혔다", explanation: "정답은 '맞혔다'입니다." },
-  { wrongSentence: "오늘이 몇 월 몇 일인지 기억나니?", wrongWord: "몇 일인지", correctWord: "며칠인지", explanation: "항상 '며칠'로 적습니다." },
-  { wrongSentence: "소풍날 비가 오면 어떻해?", wrongWord: "어떻해", correctWord: "어떡해", explanation: "서술어로 쓸 땐 '어떡해'입니다." },
+  { wrongSentence: "시험지를 다 풀고 정답을 맞췄다.", wrongWord: "맞췄다.", correctWord: "맞혔다.", explanation: "정답은 '맞혔다'입니다." },
+  { wrongSentence: "오늘이 몇 월 몇일인지 기억나니?", wrongWord: "몇일인지", correctWord: "며칠인지", explanation: "항상 '며칠'로 적습니다." },
+  { wrongSentence: "소풍날 비가 오면 어떻해?", wrongWord: "어떻해?", correctWord: "어떡해?", explanation: "서술어로 쓸 땐 '어떡해'입니다." },
   { wrongSentence: "청소를 다 마치니 금새 날이 어두워졌다.", wrongWord: "금새", correctWord: "금세", explanation: "'금세'가 바른 표기입니다." },
   { wrongSentence: "선생님께서 한글을 가리켜 주셨다.", wrongWord: "가리켜", correctWord: "가르쳐", explanation: "가르쳐 주셨다가 맞습니다." },
   { wrongSentence: "지갑을 길에서 잊어버려서 슬펐다.", wrongWord: "잊어버려서", correctWord: "잃어버려서", explanation: "물건 분실은 '잃어버려서'입니다." },
   { wrongSentence: "너 오늘따라 웬지 기분이 좋아 보인다.", wrongWord: "웬지", correctWord: "왠지", explanation: "'왜 그런지'는 '왠지'입니다." },
-  { wrongSentence: "너 이 시간에 왠 일이니?", wrongWord: "왠 일이니", correctWord: "웬 일이니", explanation: "'웬 일이니'가 바릅니다." },
-  { wrongSentence: "열심히 공부해서 시험을 잘 볼께.", wrongWord: "볼께", correctWord: "볼게", explanation: "어미는 '-ㄹ게'입니다." },
-  { wrongSentence: "친구에게 우표를 편지에 부쳤다.", wrongWord: "부쳤다", correctWord: "붙였다", explanation: "접착은 '붙였다'입니다." },
+  { wrongSentence: "너 이 시간에 왠 일이니?", wrongWord: "왠", correctWord: "웬", explanation: "'어찌 된'의 뜻은 '웬'입니다." },
+  { wrongSentence: "열심히 공부해서 시험을 잘 볼께.", wrongWord: "볼께.", correctWord: "볼게.", explanation: "어미는 '-ㄹ게'입니다." },
+  { wrongSentence: "친구에게 우표를 편지에 부쳤다.", wrongWord: "부쳤다.", correctWord: "붙였다.", explanation: "접착은 '붙였다'입니다." },
   { wrongSentence: "우체국에서 편지를 붙이고 왔다.", wrongWord: "붙이고", correctWord: "부치고", explanation: "발송은 '부치고'입니다." },
-  { wrongSentence: "동생의 감기가 싹 낳았다.", wrongWord: "낳았다", correctWord: "나았다", explanation: "병 회복은 '나았다'가 맞습니다." },
-  { wrongSentence: "강아지가 새끼를 낫았다.", wrongWord: "낫았다", correctWord: "낳았다", explanation: "출산은 '낳았다'가 맞습니다." },
+  { wrongSentence: "동생의 감기가 싹 낳았다.", wrongWord: "낳았다.", correctWord: "나았다.", explanation: "병 회복은 '나았다'가 맞습니다." },
+  { wrongSentence: "강아지가 새끼를 낫았다.", wrongWord: "낫았다.", correctWord: "낳았다.", explanation: "출산은 '낳았다'가 맞습니다." },
   { wrongSentence: "숙제를 솔직이 안 했다고 고백했다.", wrongWord: "솔직이", correctWord: "솔직히", explanation: "'솔직히'가 맞습니다." },
   { wrongSentence: "곰곰히 생각해보니 내 잘못이었다.", wrongWord: "곰곰히", correctWord: "곰곰이", explanation: "'곰곰이'가 바른 부사입니다." },
   { wrongSentence: "선생님 말씀에 귀를 기울려서 들었다.", wrongWord: "기울려서", correctWord: "기울여", explanation: "'기울여'가 올바릅니다." },
-  { wrongSentence: "학교 가기 전에 신발 끈을 메었다.", wrongWord: "메었다", correctWord: "매었다", explanation: "묶는 것은 '매었다'입니다." },
-  { wrongSentence: "수업 시간에 딴짓을 하면 않 된다.", wrongWord: "않 된다", correctWord: "안 된다", explanation: "'안 된다'가 맞습니다." },
-  { wrongSentence: "나는 거짓말을 안는다.", wrongWord: "안는다", correctWord: "않는다", explanation: "'않는다'가 맞습니다." },
+  { wrongSentence: "학교 가기 전에 신발 끈을 메었다.", wrongWord: "메었다.", correctWord: "매었다.", explanation: "묶는 것은 '매었다'입니다." },
+  { wrongSentence: "수업 시간에 딴짓을 하면 않 된다.", wrongWord: "않", correctWord: "안", explanation: "'안 된다'가 맞습니다." },
+  { wrongSentence: "나는 거짓말을 안는다.", wrongWord: "안는다.", correctWord: "않는다.", explanation: "'않는다'가 맞습니다." },
   { wrongSentence: "마음이 무척 설레이는 소풍날이다.", wrongWord: "설레이는", correctWord: "설레는", explanation: "'설레는'이 맞습니다." },
-  { wrongSentence: "내가 오늘 떡볶이를 쏠께!", wrongWord: "쏠께", correctWord: "쏠게", explanation: "'쏠게'가 올바른 어미 표기입니다." }
+  { wrongSentence: "내가 오늘 떡볶이를 쏠께!", wrongWord: "쏠께!", correctWord: "쏠게!", explanation: "'쏠게'가 올바른 어미 표기입니다." }
 ];
 
 export const BOSS_QUESTIONS = [

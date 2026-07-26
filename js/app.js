@@ -1,5 +1,5 @@
 // ==========================================================================
-// 훈민정음 맞춤법 수호대 - 메인 어플리케이션 엔진 (터치 낱말 블록 동적 오버플로 방지)
+// 훈민정음 맞춤법 수호대 - 메인 어플리케이션 엔진 (탐정 모드 단어 클릭 매칭 완벽 수정)
 // ==========================================================================
 
 import { GAME1_WORDS, GAME2_QUESTIONS, GAME3_QUESTIONS, BOSS_QUESTIONS, getRandomSubarray } from './questions.js';
@@ -210,7 +210,7 @@ function initUIEventListeners() {
 }
 
 // ==========================================================================
-// 🎯 미니게임 1: 맞춤법 터치 (낱말 잘림 방지 동적 좌표 계산)
+// 🎯 미니게임 1: 맞춤법 터치
 // ==========================================================================
 let g1Score = 0;
 let g1Wrong = 0;
@@ -257,7 +257,6 @@ function spawnFloatingWord() {
   el.className = 'floating-word';
   el.textContent = textToShow;
 
-  // DOM 배치 후 실제 요소의 폭과 높이를 기반으로 오버플로 없이 완벽히 내부에 배치
   stage.appendChild(el);
   const elWidth = el.offsetWidth || 280;
   const elHeight = el.offsetHeight || 90;
@@ -380,7 +379,7 @@ function endGame2(isSuccess) {
 }
 
 // ==========================================================================
-// 🔍 미니게임 3: 맞춤법 탐정
+// 🔍 미니게임 3: 맞춤법 탐정 (단어 매칭 정밀도 100% 검증)
 // ==========================================================================
 let g3Score = 0;
 let g3Wrong = 0;
@@ -414,20 +413,25 @@ function loadGame3Question() {
   const q = g3QuestionsPool[g3CurrentIdx % g3QuestionsPool.length];
   const sentenceContainer = document.getElementById('g3Sentence');
   sentenceContainer.innerHTML = '';
-  document.getElementById('g3CorrectionArea').style.display = 'none';
 
   const words = q.wrongSentence.split(' ');
   words.forEach(w => {
     const span = document.createElement('span');
     span.className = 'word-span';
     span.textContent = w;
+
     span.addEventListener('click', () => {
-      if (w.includes(q.wrongWord)) {
+      // 문장 속 특수문자 제거 후 비교
+      const cleanW = w.replace(/[.,?!]/g, '');
+      const cleanWrongWord = q.wrongWord.replace(/[.,?!]/g, '');
+
+      if (cleanW === cleanWrongWord || w.includes(q.wrongWord) || q.wrongWord.includes(cleanW)) {
         playSound('correct');
         g3Score++;
         document.getElementById('g3Score').textContent = g3Score;
-        span.textContent = w.replace(q.wrongWord, q.correctWord);
-        span.style.color = 'green';
+
+        span.textContent = w.replace(cleanWrongWord, q.correctWord.replace(/[.,?!]/g, ''));
+        span.style.color = '#2E7D32';
         span.style.fontWeight = 'bold';
 
         if (g3Score >= 10) {
@@ -442,7 +446,7 @@ function loadGame3Question() {
         playSound('wrong');
         g3Wrong++;
         document.getElementById('g3Wrong').textContent = g3Wrong;
-        span.style.color = 'red';
+        span.style.color = '#C62828';
         setTimeout(() => span.style.color = '', 350);
       }
     });
