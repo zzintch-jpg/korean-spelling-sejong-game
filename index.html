@@ -54,19 +54,25 @@
       </div>
     </section>
 
-    <!-- 2. 메인 로비 스크린 -->
+    <!-- 2. 메인 로비 스크린 (보스전 상단, 토큰 수집판 하단 재배치) -->
     <section id="lobbyScreen" class="screen">
       <div class="lobby-container">
         
-        <!-- 5개 자음 토큰 수집판 -->
-        <div class="token-inventory-panel">
-          <h3>✨ 훈민정음 자음 토큰 수집판 (<span id="tokenPanelCount">0</span>/5)</h3>
-          <div id="tokenGrid" class="token-grid">
-            <!-- 5개 자음 아이템이 JS로 동적 생성됨 -->
+        <!-- 👑 1. 세종대왕 보스전 대형 단독 배너 (맨 위로 이동) -->
+        <div class="boss-banner-card locked" id="btnBossBattle">
+          <div class="boss-banner-left">
+            <img src="assets/king_sejong.jpg" alt="세종대왕" class="boss-img-thumbnail">
+            <div class="boss-banner-info">
+              <h3>👑 세종대왕 보스전</h3>
+              <p id="bossLockText">5개 한글 토큰(ㄱ,ㄴ,ㄷ,ㄹ,ㅁ)을 모아 세종대왕과의 10문제 최종 결투에 도전하세요!</p>
+            </div>
+          </div>
+          <div class="boss-banner-right">
+            <span class="boss-status-badge">⚡ 보스전 도전</span>
           </div>
         </div>
 
-        <!-- 3종 미니게임 수평 1행 배치 (30초 내 10개 도전) -->
+        <!-- 2. 3종 미니게임 수평 1행 배치 (30초 내 10개 도전) -->
         <div class="minigame-horizontal-row">
           <div class="menu-card" id="btnGame1">
             <div class="menu-icon">🎯</div>
@@ -93,17 +99,11 @@
           </div>
         </div>
 
-        <!-- 👑 세종대왕 보스전 대형 단독 배너 -->
-        <div class="boss-banner-card locked" id="btnBossBattle">
-          <div class="boss-banner-left">
-            <img src="assets/king_sejong.jpg" alt="세종대왕" class="boss-img-thumbnail">
-            <div class="boss-banner-info">
-              <h3>👑 세종대왕 보스전</h3>
-              <p id="bossLockText">5개 한글 토큰(ㄱ,ㄴ,ㄷ,ㄹ,ㅁ)을 모아 세종대왕과의 10문제 최종 결투에 도전하세요!</p>
-            </div>
-          </div>
-          <div class="boss-banner-right">
-            <span class="boss-status-badge">⚡ 보스전 도전</span>
+        <!-- 🪙 3. 5개 자음 토큰 수집판 (아래로 이동) -->
+        <div class="token-inventory-panel">
+          <h3>✨ 훈민정음 자음 토큰 수집판 (<span id="tokenPanelCount">0</span>/5)</h3>
+          <div id="tokenGrid" class="token-grid">
+            <!-- 5개 자음 아이템이 JS로 동적 생성됨 -->
           </div>
         </div>
 
