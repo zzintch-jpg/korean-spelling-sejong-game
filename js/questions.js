@@ -1,43 +1,45 @@
-// 초등 3~4학년 맞춤법 대용량 데이터베이스 (100개 이상 문항)
+// 초등 3~4학년 맞춤법 대용량 데이터베이스 (게임 모드별 역할 명확화)
 
+// 🎯 미니게임 1(맞춤법 터치): 문맥과 무관하게 절대적으로 바른 표기 vs 오탈자 단어만 엄선
 export const GAME1_WORDS = [
-  { correct: "어이없다", wrong: "어의없다", explanation: "'어처구니가 없다'는 '어이없다'가 맞습니다." },
-  { correct: "되다", wrong: "돼다", explanation: "'되' 뒤에 어미가 붙을 때는 '되다'입니다." },
-  { correct: "안 돼", wrong: "안 되", explanation: "문장 끝에는 '안 돼'가 맞습니다." },
-  { correct: "며칠", wrong: "몇 일", explanation: "날짜를 나타낼 때는 항상 '며칠'입니다." },
-  { correct: "맞히다", wrong: "맞추다", explanation: "정답을 맞히는 것은 '맞히다'입니다." },
-  { correct: "낫다", wrong: "낳다", explanation: "병이 회복되는 것은 '낫다'입니다." },
-  { correct: "부치다", wrong: "붙이다", explanation: "편지를 보내는 것은 '부치다'입니다." },
-  { correct: "굳이", wrong: "구지", explanation: "소리는 [구지]지만 표기는 '굳이'입니다." },
-  { correct: "같이", wrong: "가치", explanation: "함께한다는 뜻은 '같이'입니다." },
-  { correct: "설레다", wrong: "설레이다", explanation: "기본형은 '설레다'입니다." },
-  { correct: "오랜만에", wrong: "오랭만에", explanation: "'오래 동안'의 뜻은 '오랜만에'입니다." },
-  { correct: "어떡해", wrong: "어떻해", explanation: "'어떻게 해'의 줄임말은 '어떡해'입니다." },
-  { correct: "역할", wrong: "열할", explanation: "맡은 직분은 '역할'입니다." },
-  { correct: "깨끗이", wrong: "깨끗히", explanation: "'ㅅ' 받침 뒤에는 '이'가 붙어 '깨끗이'입니다." },
-  { correct: "솔직히", wrong: "솔직이", explanation: "'하'가 붙는 어간 뒤에는 '히'가 붙습니다." },
-  { correct: "금세", wrong: "금새", explanation: "'금시에'가 줄어든 말은 '금세'입니다." },
-  { correct: "가르치다", wrong: "가리키다", explanation: "지식을 전달하는 것은 '가르치다'입니다." },
-  { correct: "가리키다", wrong: "가르치다", explanation: "손가락으로 방향을 목적인 것은 '가리키다'입니다." },
-  { correct: "잃어버리다", wrong: "잊어버리다", explanation: "물건을 분실한 것은 '잃어버리다'입니다." },
-  { correct: "잊어버리다", wrong: "잃어버리다", explanation: "기억을 놓친 것은 '잊어버리다'입니다." },
-  { correct: "매다", wrong: "메다", explanation: "끈을 묶는 것은 '매다'입니다." },
-  { correct: "메다", wrong: "매다", explanation: "어깨에 지는 것은 '메다'입니다." },
-  { correct: "곰곰이", wrong: "곰곰히", explanation: "부사 파생 접미사는 '곰곰이'입니다." },
-  { correct: "일찍이", wrong: "일찍히", explanation: "부사 '일찍이'가 맞는 표기입니다." },
-  { correct: "웬일", wrong: "왠일", explanation: "'어찌 된 일'은 '웬일'입니다." },
-  { correct: "왠지", wrong: "웬지", explanation: "'왜 그런지 모르게'는 '왠지'입니다." },
-  { correct: "바람", wrong: "바램", explanation: "소망을 뜻하는 명사는 '바람'입니다." },
-  { correct: "할게", wrong: "할께", explanation: "어미 '-ㄹ게'는 예사소리로 적습니다." },
-  { correct: "줄게", wrong: "줄께", explanation: "어미 '-ㄹ게'는 소리는 된소리가 나도 예사소리로 표기합니다." },
-  { correct: "할는지", wrong: "할런지", explanation: "어미 '-ㄹ는지'가 바른 표기입니다." },
-  { correct: "다행히", wrong: "다행이", explanation: "'다행히'가 올바른 부사 표기입니다." },
-  { correct: "더욱이", wrong: "더욱히", explanation: "소리대로 '더욱이'로 적습니다." },
-  { correct: "오뚝이", wrong: "오뚜기", explanation: "원형을 밝혀 '오뚝이'로 적습니다." },
-  { correct: "떡볶이", wrong: "떡복이", explanation: "볶아서 만든 음식은 '떡볶이'입니다." },
-  { correct: "어이없다", wrong: "어의없다", explanation: "황당한 상황은 '어이없다'입니다." }
+  { correct: "어이없다", wrong: "어의없다" },
+  { correct: "며칠", wrong: "몇 일" },
+  { correct: "굳이", wrong: "구지" },
+  { correct: "설레다", wrong: "설레이다" },
+  { correct: "설렘", wrong: "설레임" },
+  { correct: "오랜만에", wrong: "오랭만에" },
+  { correct: "어떡해", wrong: "어떻해" },
+  { correct: "역할", wrong: "열할" },
+  { correct: "깨끗이", wrong: "깨끗히" },
+  { correct: "솔직히", wrong: "솔직이" },
+  { correct: "금세", wrong: "금새" },
+  { correct: "곰곰이", wrong: "곰곰히" },
+  { correct: "일찍이", wrong: "일찍히" },
+  { correct: "웬일", wrong: "왠일" },
+  { correct: "왠지", wrong: "웬지" },
+  { correct: "바람", wrong: "바램" },
+  { correct: "할게", wrong: "할께" },
+  { correct: "줄게", wrong: "줄께" },
+  { correct: "갈게", wrong: "갈께" },
+  { correct: "할는지", wrong: "할런지" },
+  { correct: "다행히", wrong: "다행이" },
+  { correct: "더욱이", wrong: "더욱히" },
+  { correct: "오뚝이", wrong: "오뚜기" },
+  { correct: "떡볶이", wrong: "떡복이" },
+  { correct: "찌개", wrong: "찌게" },
+  { correct: "육개장", wrong: "육계장" },
+  { correct: "희한하다", wrong: "희한하다" },
+  { correct: "나지막이", wrong: "나지막히" },
+  { correct: "지그시", wrong: "지긋이" },
+  { correct: "서슴지", wrong: "서슴치" },
+  { correct: "생각건대", wrong: "생각컨대" },
+  { correct: "흐리멍덩하다", wrong: "흐리멍텅하다" },
+  { correct: "만반의", wrong: "만발의" },
+  { correct: "자물쇠", wrong: "자물쇠" },
+  { correct: "요컨대", wrong: "요컨대" }
 ];
 
+// ✍️ 미니게임 2(문장 빈칸 채우기): 문맥에 따라 뜻이 달라지는 동음이의어/유의어 중심
 export const GAME2_QUESTIONS = [
   { sentence: "신발 끈을 단단히 ( ___ ).", options: ["매다", "메다"], answer: "매다", explanation: "끈을 묶는 것은 '매다'입니다." },
   { sentence: "가방을 어깨에 ( ___ ) 학교에 갔다.", options: ["메고", "매고"], answer: "메고", explanation: "어깨에 지는 것은 '메다'입니다." },
@@ -64,23 +66,16 @@ export const GAME2_QUESTIONS = [
   { sentence: "네가 이 시간에 ( ___ ) 일이니?", options: ["웬", "왠"], answer: "웬", explanation: "'어찌 된'을 뜻하는 수식어는 '웬'입니다." },
   { sentence: "선생님께 편지를 ( ___ ) 생각이다.", options: ["쓸", "쓸께"], answer: "쓸", explanation: "어미 '-ㄹ' 뒤 표준 표기입니다." },
   { sentence: "내일도 반드시 약속을 ( ___ ).", options: ["지킬게", "지킬께"], answer: "지킬게", explanation: "어미 '-ㄹ게'는 예사소리로 표기합니다." },
-  { sentence: "방을 깨끗하게 ( ___ ) 치웠다.", options: ["닦고", "닦아서"], answer: "닦고", explanation: "연결어미 활용입니다." },
-  { sentence: "친구의 허락을 ( ___ ) 물건을 빌렸다.", options: ["맡아", "맡고"], answer: "맡아", explanation: "자연스러운 문맥 선택입니다." },
-  { sentence: "어제 본 영화는 참 ( ___ ).", options: ["재밌었다", "재미있었다"], answer: "재미있었다", explanation: "표준 표기 원형입니다." },
-  { sentence: "소문이 전교에 ( ___ ) 퍼졌다.", options: ["일파만파", "일파만파로"], answer: "일파만파로", explanation: "부사격 조사 결합입니다." },
-  { sentence: "자전거를 타고 언덕을 ( ___ ).", options: ["넘어갔다", "너머갔다"], answer: "넘어갔다", explanation: "동사 활용형 '넘어갔다'가 맞습니다." },
   { sentence: "산 ( ___ ) 마을이 보인다.", options: ["너머에", "넘어에"], answer: "너머에", explanation: "경계 밖 위치를 나타내는 명사는 '너머'입니다." },
-  { sentence: "맛있는 음식을 먹으니 기분이 ( ___ ).", options: ["좋다", "조타"], answer: "좋다", explanation: "기본형 표기 '좋다'가 바릅니다." },
-  { sentence: "하늘에 구름이 한 점도 ( ___ ).", options: ["없다", "업다"], answer: "없다", explanation: "존재하지 않음은 '없다'입니다." },
-  { sentence: "학교 교가 가사를 정확히 ( ___ ).", options: ["외웠다", "에웠다"], answer: "외웠다", explanation: "암기한 것은 '외웠다'입니다." },
-  { sentence: "어머니께서 맛있는 떡볶이를 ( ___ ).", options: ["해주셨다", "해줬다"], answer: "해주셨다", explanation: "존칭 표현 활용입니다." }
+  { sentence: "자전거를 타고 언덕을 ( ___ ).", options: ["넘어갔다", "너머갔다"], answer: "넘어갔다", explanation: "동사 활용형 '넘어갔다'가 맞습니다." }
 ];
 
+// 🔍 미니게임 3(맞춤법 탐정): 문장 속 오탈자 교정 문항
 export const GAME3_QUESTIONS = [
   { wrongSentence: "내일 친구들과 약속을 해도 돼나요?", wrongWord: "돼나요", correctWord: "되나요", explanation: "'되나요'가 올바른 표기입니다." },
   { wrongSentence: "선생님을 오랭만에 만나서 반갑습니다.", wrongWord: "오랭만에", correctWord: "오랜만에", explanation: "'오랜만에'가 맞습니다." },
   { wrongSentence: "쓰레기는 깨끗히 치워야 합니다.", wrongWord: "깨끗히", correctWord: "깨끗이", explanation: "'깨끗이'가 바른 부사 표기입니다." },
-  { wrongSentence: "그 문제는 굳지 설명하지 않아도 알아.", wrongWord: "굳지", correctWord: "굳이", explanation: "'굳이'로 구개음화 전 원형 표기를 살립니다." },
+  { wrongSentence: "그 문제는 굳지 설명하지 않아도 알아.", wrongWord: "굳지", correctWord: "굳이", explanation: "'굳이'로 원형 표기를 살립니다." },
   { wrongSentence: "가방을 어깨에 매고 학교에 갑니다.", wrongWord: "매고", correctWord: "메고", explanation: "어깨에 걸치는 것은 '메고'입니다." },
   { wrongSentence: "자전거가 나무에 부딛쳤다.", wrongWord: "부딛쳤다", correctWord: "부딪쳤다", explanation: "'부딪쳤다'가 바른 표기입니다." },
   { wrongSentence: "동생이 거짓말을 해서 정말 어의가 없었다.", wrongWord: "어의가", correctWord: "어이가", explanation: "'어이가' 없을 때 쓰는 말입니다." },
@@ -101,17 +96,10 @@ export const GAME3_QUESTIONS = [
   { wrongSentence: "곰곰히 생각해보니 내 잘못이었다.", wrongWord: "곰곰히", correctWord: "곰곰이", explanation: "'곰곰이'가 바른 부사입니다." },
   { wrongSentence: "선생님 말씀에 귀를 기울려서 들었다.", wrongWord: "기울려서", correctWord: "기울여", explanation: "'기울여'가 올바릅니다." },
   { wrongSentence: "학교 가기 전에 신발 끈을 메었다.", wrongWord: "메었다", correctWord: "매었다", explanation: "묶는 것은 '매었다'입니다." },
-  { wrongSentence: "가방을 어깨에 매고 출발했다.", wrongWord: "매고", correctWord: "메고", explanation: "걸치는 것은 '메고'입니다." },
   { wrongSentence: "수업 시간에 딴짓을 하면 않 된다.", wrongWord: "않 된다", correctWord: "안 된다", explanation: "'안 된다'가 맞습니다." },
   { wrongSentence: "나는 거짓말을 안는다.", wrongWord: "안는다", correctWord: "않는다", explanation: "'않는다'가 맞습니다." },
-  { wrongSentence: "친구와 서로 답을 맞혔다.", wrongWord: "맞혔다", correctWord: "맞추었다", explanation: "대조하는 것은 '맞추었다'입니다." },
-  { wrongSentence: "선생님이 문제를 맞추라고 하셨다.", wrongWord: "맞추라고", correctWord: "맞히라고", explanation: "정답을 맞히는 것은 '맞히라고'입니다." },
   { wrongSentence: "마음이 무척 설레이는 소풍날이다.", wrongWord: "설레이는", correctWord: "설레는", explanation: "'설레는'이 맞습니다." },
-  { wrongSentence: "이 일을 다 하려면 힘이 붙인다.", wrongWord: "붙인다", correctWord: "부친다", explanation: "벅찬 것은 '부친다'입니다." },
-  { wrongSentence: "오늘이 몇 월 몇 일인지 아시나요?", wrongWord: "몇 일인지", correctWord: "며칠인지", explanation: "'며칠인지'가 맞습니다." },
-  { wrongSentence: "내가 오늘 떡볶이를 쏠께!", wrongWord: "쏠께", correctWord: "쏠게", explanation: "'쏠게'가 올바른 어미 표기입니다." },
-  { wrongSentence: "산 넘어 마을로 놀러 갔다.", wrongWord: "넘어", correctWord: "너머", explanation: "위치는 '너머'입니다." },
-  { wrongSentence: "더욱히 신나는 일이 생겼다.", wrongWord: "더욱히", correctWord: "더욱이", explanation: "'더욱이'가 바른 표기입니다." }
+  { wrongSentence: "내가 오늘 떡볶이를 쏠께!", wrongWord: "쏠께", correctWord: "쏠게", explanation: "'쏠게'가 올바른 어미 표기입니다." }
 ];
 
 export const BOSS_QUESTIONS = [
@@ -132,7 +120,6 @@ export const BOSS_QUESTIONS = [
   { question: "15. '선생님께서 한글을 친절하게 ( ___ ).' 는?", options: ["가르쳐 주셨다", "가리켜 주셨다"], answer: 0, explanation: "지식을 전달하는 것은 '가르치다'입니다." }
 ];
 
-// 랜덤으로 배열을 섞어주는 유틸리티 함수
 export function getRandomSubarray(arr, size) {
   const shuffled = arr.slice();
   let i = arr.length;
