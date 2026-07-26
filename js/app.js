@@ -1,12 +1,23 @@
 // ==========================================================================
-// 훈민정음 맞춤법 수호대 - 100% 단일 자립형 무결점 애플리케이션 스크립트 (v3.5.0)
-// 파이어베이스 실제 구글 인증 설정 감지 및 실시간 연동 지원 엔진
+// 훈민정음 맞춤법 수호대 - 100% 단일 자립형 무결점 애플리케이션 스크립트 (v4.0.0)
+// 파이어베이스 구글 계정 인증 (korean-spelling-game) 및 파이어스토어 실시간 연동
 // ==========================================================================
 
 (function() {
   'use strict';
 
-  // 1. 자음 토큰 데이터
+  // 1. 사용자 전용 파이어베이스 실체화 객체
+  const REAL_FIREBASE_CONFIG = {
+    apiKey: "AIzaSyAyxeADFo1G1B9ygrFwlIy6xJ6cVYC4g74",
+    authDomain: "korean-spelling-game.firebaseapp.com",
+    projectId: "korean-spelling-game",
+    storageBucket: "korean-spelling-game.firebasestorage.app",
+    messagingSenderId: "872580272306",
+    appId: "1:872580272306:web:214d9d45e2c37cbc59f9ab",
+    measurementId: "G-5MDSD794P0"
+  };
+
+  // 2. 자음 토큰 데이터
   const HANGUL_TOKENS = [
     { id: 0, char: 'ㄱ', name: '기역', desc: '훈민정음 어금니소리 토큰' },
     { id: 1, char: 'ㄴ', name: '니은', desc: '훈민정음 혀소리 토큰' },
@@ -19,7 +30,7 @@
     return collectedTokens && collectedTokens.length >= 5;
   }
 
-  // 2. 대용량 맞춤법 데이터베이스
+  // 3. 대용량 맞춤법 데이터베이스
   const GAME1_WORDS = [
     { correct: "어이없다", wrong: "어의없다" },
     { correct: "며칠", wrong: "몇 일" },
@@ -149,7 +160,7 @@
     return shuffled.slice(0, size);
   }
 
-  // 3. 🔊 오디오 효과음 합성 엔진
+  // 4. 🔊 오디오 효과음 합성 엔진
   let audioCtx = null;
   function getAudioContext() {
     if (!audioCtx) {
@@ -245,7 +256,7 @@
     } catch (e) {}
   }
 
-  // 4. 유저 상태 관리
+  // 5. 유저 상태 관리
   let currentUser = {
     uid: '',
     displayName: '',
@@ -306,41 +317,22 @@
     }
   }
 
-  // 5. 파이어베이스 인증 감지 및 연동 처리
-  window.startGuestLogin = function() {
-    playSound('click');
-    const nickInput = document.getElementById('nicknameInput');
-    const nick = nickInput ? nickInput.value.trim() : '한글도전자';
-    const guestId = Math.random().toString(36).substr(2, 6);
-    const user = { uid: `guest_${guestId}`, displayName: nick || '한글도전자' };
-    handleUserLoggedIn(user);
-  };
-
+  // 6. 파이어베이스 초기화 및 구글 실체화 로그인 (signInWithPopup / signInWithRedirect)
   function initFirebaseApp() {
     if (window.firebase && window.firebase.auth) {
       try {
         if (!window.firebase.apps || window.firebase.apps.length === 0) {
-          const cfg = (window.FIREBASE_CONFIG) || (window.ENV ? {
-            apiKey: window.ENV.VITE_FIREBASE_API_KEY,
-            authDomain: window.ENV.VITE_FIREBASE_AUTH_DOMAIN,
-            projectId: window.ENV.VITE_FIREBASE_PROJECT_ID
-          } : null);
-
-          if (cfg && cfg.apiKey) {
-            window.firebase.initializeApp(cfg);
-          } else {
-            window.firebase.initializeApp({
-              authDomain: "korean-spelling-game.firebaseapp.com",
-              projectId: "korean-spelling-game"
-            });
-          }
+          window.firebase.initializeApp(REAL_FIREBASE_CONFIG);
         }
         return window.firebase.auth();
-      } catch (e) {}
+      } catch (e) {
+        console.warn("파이어베이스 앱 초기화:", e);
+      }
     }
     return null;
   }
 
+  // 페이지 로드 시 구글 리다이렉트 로그인 감지
   window.addEventListener('load', function() {
     var auth = initFirebaseApp();
     if (auth) {
@@ -356,6 +348,16 @@
     }
   });
 
+  window.startGuestLogin = function() {
+    playSound('click');
+    const nickInput = document.getElementById('nicknameInput');
+    const nick = nickInput ? nickInput.value.trim() : '한글도전자';
+    const guestId = Math.random().toString(36).substr(2, 6);
+    const user = { uid: `guest_${guestId}`, displayName: nick || '한글도전자' };
+    handleUserLoggedIn(user);
+  };
+
+  // 🌐 파이어베이스 구글 계정 선택창 호출 (signInWithPopup -> signInWithRedirect)
   window.startGoogleLogin = function() {
     playSound('click');
     const nickInput = document.getElementById('nicknameInput');
@@ -367,6 +369,7 @@
         var provider = new window.firebase.auth.GoogleAuthProvider();
         provider.addScope('email');
         provider.addScope('profile');
+        provider.setCustomParameters({ prompt: 'select_account' });
 
         auth.signInWithPopup(provider).then(function(result) {
           var user = result.user;
@@ -380,7 +383,9 @@
         });
       } catch (e) {
         console.warn("구글 인증 리다이렉트 이동:", e);
-        auth.signInWithRedirect(new window.firebase.auth.GoogleAuthProvider());
+        var p = new window.firebase.auth.GoogleAuthProvider();
+        p.setCustomParameters({ prompt: 'select_account' });
+        auth.signInWithRedirect(p);
       }
     } else {
       const fallbackUid = `google_${Math.random().toString(36).substr(2, 6)}`;
@@ -443,7 +448,7 @@
     updateUI();
   }
 
-  // 6. 미니게임 1
+  // 7. 미니게임 1
   let g1Score = 0;
   let g1Wrong = 0;
   let g1TimeLeft = 30;
@@ -539,7 +544,7 @@
     }
   }
 
-  // 7. 미니게임 2
+  // 8. 미니게임 2
   let g2Score = 0;
   let g2Wrong = 0;
   let g2TimeLeft = 30;
@@ -611,7 +616,7 @@
     }
   }
 
-  // 8. 미니게임 3
+  // 9. 미니게임 3
   let g3Score = 0;
   let g3Wrong = 0;
   let g3TimeLeft = 30;
@@ -727,7 +732,7 @@
     showScreen('lobbyScreen');
   }
 
-  // 9. 보스전
+  // 10. 보스전
   let bossQIdx = 0;
   let bossScore = 0;
   let bossQTimer = null;
@@ -809,7 +814,7 @@
     showScreen('lobbyScreen');
   }
 
-  // 10. 명예의 전당
+  // 11. 명예의 전당
   function renderHallOfFame(type) {
     playSound('click');
     showScreen('hallScreen');
@@ -867,7 +872,7 @@
     if (modal) modal.style.display = 'flex';
   }
 
-  // 11. 이벤트 연결
+  // 12. 이벤트 연결
   function initUIEventListeners() {
     const btnLogout = document.getElementById('btnLogout');
     if (btnLogout) {
