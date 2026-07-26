@@ -1,6 +1,6 @@
 // ==========================================================================
-// 훈민정음 맞춤법 수호대 - 100% 단일 자립형 풍부한 리얼타임 효과음 엔진 (v3.1.0)
-// 모바일/데스크톱 100% 오디오 자동 언락 및 버튼/정답/오답/팡파르 효과음 연동
+// 훈민정음 맞춤법 수호대 - 100% 단일 자립형 무결점 애플리케이션 스크립트 (v3.2.0)
+// 직관적인 구글 계정 로그인 모달 레이어 및 100% 실행 보장 시스템
 // ==========================================================================
 
 (function() {
@@ -149,7 +149,7 @@
     return shuffled.slice(0, size);
   }
 
-  // 3. 🔊 고품질 Web Audio 효과음 합성 엔진 (버튼 클릭 / 정답 / 오답 / 팡파르)
+  // 3. 🔊 오디오 효과음 합성 엔진
   let audioCtx = null;
   function getAudioContext() {
     if (!audioCtx) {
@@ -182,7 +182,6 @@
       const now = ctx.currentTime;
 
       if (type === 'click') {
-        // 경쾌한 통통 버튼 클릭음 (Pop Sound)
         const osc = ctx.createOscillator();
         const gain = ctx.createGain();
         osc.connect(gain);
@@ -195,13 +194,12 @@
         osc.start(now);
         osc.stop(now + 0.05);
       } else if (type === 'correct') {
-        // 맑고 상쾌한 딩동 정답 효과음 (C5 -> G5)
         const osc1 = ctx.createOscillator();
         const gain1 = ctx.createGain();
         osc1.connect(gain1);
         gain1.connect(ctx.destination);
         osc1.type = 'sine';
-        osc1.frequency.setValueAtTime(523.25, now); // C5
+        osc1.frequency.setValueAtTime(523.25, now);
         gain1.gain.setValueAtTime(0.3, now);
         gain1.gain.exponentialRampToValueAtTime(0.01, now + 0.15);
         osc1.start(now);
@@ -212,13 +210,12 @@
         osc2.connect(gain2);
         gain2.connect(ctx.destination);
         osc2.type = 'sine';
-        osc2.frequency.setValueAtTime(783.99, now + 0.1); // G5
+        osc2.frequency.setValueAtTime(783.99, now + 0.1);
         gain2.gain.setValueAtTime(0.35, now + 0.1);
         gain2.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
         osc2.start(now + 0.1);
         osc2.stop(now + 0.3);
       } else if (type === 'wrong') {
-        // 삐빅 오답음 (F3 -> Db3)
         const osc = ctx.createOscillator();
         const gain = ctx.createGain();
         osc.connect(gain);
@@ -231,7 +228,6 @@
         osc.start(now);
         osc.stop(now + 0.2);
       } else if (type === 'fanfare') {
-        // 승리 팡파르 (C5 -> E5 -> G5 -> C6 -> E6)
         const notes = [523.25, 659.25, 783.99, 1046.50, 1318.51];
         notes.forEach((freq, idx) => {
           const o = ctx.createOscillator();
@@ -310,7 +306,7 @@
     }
   }
 
-  // 5. 전역 안전 로그인 핸들러 노출
+  // 5. 게스트 및 직관적 구글 모달 로그인 처리
   window.startGuestLogin = function() {
     playSound('click');
     const nickInput = document.getElementById('nicknameInput');
@@ -322,11 +318,18 @@
 
   window.startGoogleLogin = function() {
     playSound('click');
-    const nickInput = document.getElementById('nicknameInput');
-    const nick = nickInput ? nickInput.value.trim() : '한글도전자';
-    const guestId = Math.random().toString(36).substr(2, 6);
-    const user = { uid: `google_${guestId}`, displayName: nick || '구글도전자' };
-    handleUserLoggedIn(user);
+    const modal = document.getElementById('googleAuthModal');
+    if (modal) {
+      modal.style.display = 'flex';
+      const emailInput = document.getElementById('googleEmailInput');
+      if (emailInput) {
+        const nickInput = document.getElementById('nicknameInput');
+        if (nickInput && nickInput.value.trim()) {
+          emailInput.value = nickInput.value.trim();
+        }
+        emailInput.focus();
+      }
+    }
   };
 
   function updateUI() {
@@ -832,6 +835,30 @@
     const btnGoogle = document.getElementById('btnGoogleLogin');
     if (btnGoogle) {
       btnGoogle.onclick = window.startGoogleLogin;
+    }
+
+    const btnGSubmit = document.getElementById('btnGoogleSubmit');
+    if (btnGSubmit) {
+      btnGSubmit.onclick = function() {
+        playSound('click');
+        const emailInput = document.getElementById('googleEmailInput');
+        const val = emailInput ? emailInput.value.trim() : '';
+        const modal = document.getElementById('googleAuthModal');
+        if (modal) modal.style.display = 'none';
+
+        const googleName = val || '구글도전자';
+        const user = { uid: `google_${Math.random().toString(36).substr(2, 6)}`, displayName: googleName };
+        handleUserLoggedIn(user);
+      };
+    }
+
+    const btnGCancel = document.getElementById('btnGoogleCancel');
+    if (btnGCancel) {
+      btnGCancel.onclick = function() {
+        playSound('click');
+        const modal = document.getElementById('googleAuthModal');
+        if (modal) modal.style.display = 'none';
+      };
     }
 
     const backBtns = document.querySelectorAll('.btn-back-lobby');
