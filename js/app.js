@@ -1,5 +1,5 @@
 // ==========================================================================
-// 훈민정음 맞춤법 수호대 - 메인 어플리케이션 엔진 (5개 자음 토큰 밸런싱)
+// 훈민정음 맞춤법 수호대 - 메인 어플리케이션 엔진 (한글 전용 매칭 & 80% 바른 낱말 출현 밸런싱)
 // ==========================================================================
 
 import { GAME1_WORDS, GAME2_QUESTIONS, GAME3_QUESTIONS, BOSS_QUESTIONS, getRandomSubarray } from './questions.js';
@@ -210,7 +210,7 @@ function initUIEventListeners() {
 }
 
 // ==========================================================================
-// 🎯 미니게임 1: 맞춤법 터치
+// 🎯 미니게임 1: 맞춤법 터치 (80% 높은 확률로 바른 낱말 출현 밸런싱)
 // ==========================================================================
 let g1Score = 0;
 let g1Wrong = 0;
@@ -239,8 +239,9 @@ function startGame1() {
     }
   }, 1000);
 
+  // 650ms 간격으로 풍성하게 단어 생성 (80% 확률로 바른 낱말 출현!)
   spawnFloatingWord();
-  g1SpawnInterval = setInterval(spawnFloatingWord, 1000);
+  g1SpawnInterval = setInterval(spawnFloatingWord, 650);
 }
 
 function spawnFloatingWord() {
@@ -250,7 +251,9 @@ function spawnFloatingWord() {
   }
   const stage = document.getElementById('g1Stage');
   const wordObj = g1ActiveWordsPool[Math.floor(Math.random() * g1ActiveWordsPool.length)];
-  const isCorrectType = Math.random() > 0.35;
+  
+  // 80% 높은 확률로 바른 낱말이 많이 나오도록 조정하여 10개 쉽게 터치 가능!
+  const isCorrectType = Math.random() < 0.80;
   const textToShow = isCorrectType ? wordObj.correct : wordObj.wrong;
 
   const el = document.createElement('div');
@@ -291,7 +294,8 @@ function spawnFloatingWord() {
     setTimeout(() => el.remove(), 120);
   });
 
-  setTimeout(() => { if (el.parentNode) el.remove(); }, 2200);
+  // 2.8초 동안 화면에 머물러 아이들이 여유롭게 터치할 수 있도록 조치
+  setTimeout(() => { if (el.parentNode) el.remove(); }, 2800);
 }
 
 function endGame1(isSuccess) {
@@ -379,13 +383,17 @@ function endGame2(isSuccess) {
 }
 
 // ==========================================================================
-// 🔍 미니게임 3: 맞춤법 탐정
+// 🔍 미니게임 3: 맞춤법 탐정 (순수 한글 전용 추출 매칭)
 // ==========================================================================
 let g3Score = 0;
 let g3Wrong = 0;
 let g3TimeLeft = 30;
 let g3CurrentIdx = 0;
 let g3QuestionsPool = [];
+
+function cleanHangul(str) {
+  return str ? str.replace(/[^가-힣]/g, '') : '';
+}
 
 function startGame3() {
   g3Score = 0;
@@ -421,15 +429,17 @@ function loadGame3Question() {
     span.textContent = w;
 
     span.addEventListener('click', () => {
-      const cleanW = w.replace(/[.,?!]/g, '');
-      const cleanWrongWord = q.wrongWord.replace(/[.,?!]/g, '');
+      const clickedHangul = cleanHangul(w);
+      const targetHangul = cleanHangul(q.wrongWord);
 
-      if (cleanW === cleanWrongWord || w.includes(q.wrongWord) || q.wrongWord.includes(cleanW)) {
+      if (clickedHangul && targetHangul && (clickedHangul === targetHangul || clickedHangul.includes(targetHangul) || targetHangul.includes(clickedHangul))) {
         playSound('correct');
         g3Score++;
         document.getElementById('g3Score').textContent = g3Score;
 
-        span.textContent = w.replace(cleanWrongWord, q.correctWord.replace(/[.,?!]/g, ''));
+        const rawWrong = cleanHangul(q.wrongWord);
+        const rawCorrect = cleanHangul(q.correctWord);
+        span.textContent = w.replace(rawWrong, rawCorrect);
         span.style.color = '#2E7D32';
         span.style.fontWeight = 'bold';
 
