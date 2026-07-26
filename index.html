@@ -15,10 +15,10 @@
       <div class="header-title-box">
         <h1 class="game-title">📜 훈민정음 맞춤법 수호대</h1>
       </div>
-      <p class="subtitle">1분 미니게임으로 한글 토큰 14개를 모아 세종대왕에게 도전하라!</p>
+      <p class="subtitle">20초 미니게임으로 한글 토큰 14개를 모아 세종대왕에게 도전하라!</p>
     </header>
 
-    <!-- 유저 정보 바 (로그아웃 / 다른 계정으로 로그인 버튼 추가) -->
+    <!-- 유저 정보 바 -->
     <div id="userBar" class="user-bar" style="display: none;">
       <div class="user-info-left">
         <div class="user-info">
@@ -64,13 +64,13 @@
           </div>
         </div>
 
-        <!-- 3종 미니게임 수평 1행 배치 (Horizontal 3 Columns) -->
+        <!-- 3종 미니게임 수평 1행 배치 (20초 타임어택) -->
         <div class="minigame-horizontal-row">
           <div class="menu-card" id="btnGame1">
             <div class="menu-icon">🎯</div>
             <div>
               <h4>1. 맞춤법 터치</h4>
-              <p>올바른 낱말 빠르게 터치 (1분)</p>
+              <p>올바른 낱말 빠르게 터치 (20초)</p>
             </div>
           </div>
 
@@ -78,7 +78,7 @@
             <div class="menu-icon">✍️</div>
             <div>
               <h4>2. 문장 빈칸 채우기</h4>
-              <p>문맥에 맞는 단어 고르기 (1분)</p>
+              <p>문맥에 맞는 단어 고르기 (20초)</p>
             </div>
           </div>
 
@@ -86,12 +86,12 @@
             <div class="menu-icon">🔍</div>
             <div>
               <h4>3. 맞춤법 탐정</h4>
-              <p>문장 속 틀린 글자 고치기 (1분)</p>
+              <p>문장 속 틀린 글자 고치기 (20초)</p>
             </div>
           </div>
         </div>
 
-        <!-- 👑 세종대왕 보스전 대형 단독 배너 (가고 싶게 만드는 전용 디자인) -->
+        <!-- 👑 세종대왕 보스전 대형 단독 배너 -->
         <div class="boss-banner-card locked" id="btnBossBattle">
           <div class="boss-banner-left">
             <img src="assets/king_sejong.jpg" alt="세종대왕" class="boss-img-thumbnail">
@@ -119,7 +119,7 @@
     <section id="game1Screen" class="screen">
       <div class="game-header">
         <button class="btn btn-back-lobby">⬅️ 로비로</button>
-        <div class="timer-box">⏱️ 남은시간: <span id="g1Timer">60</span>초</div>
+        <div class="timer-box">⏱️ 남은시간: <span id="g1Timer">20</span>초</div>
         <div class="score-box">점수: <span id="g1Score">0</span>점</div>
       </div>
       <p style="margin-bottom: 10px; color: #5D4037; font-weight: 700; font-size: 1.1rem;">바른 맞춤법 단어가 떠오르면 빠르게 터치하세요!</p>
@@ -132,7 +132,7 @@
     <section id="game2Screen" class="screen">
       <div class="game-header">
         <button class="btn btn-back-lobby">⬅️ 로비로</button>
-        <div class="timer-box">⏱️ 남은시간: <span id="g2Timer">60</span>초</div>
+        <div class="timer-box">⏱️ 남은시간: <span id="g2Timer">20</span>초</div>
         <div class="score-box">맞힌 개수: <span id="g2Score">0</span>개</div>
       </div>
       <div class="choice-card-box">
@@ -148,7 +148,7 @@
     <section id="game3Screen" class="screen">
       <div class="game-header">
         <button class="btn btn-back-lobby">⬅️ 로비로</button>
-        <div class="timer-box">⏱️ 남은시간: <span id="g3Timer">60</span>초</div>
+        <div class="timer-box">⏱️ 남은시간: <span id="g3Timer">20</span>초</div>
         <div class="score-box">해결 문장: <span id="g3Score">0</span>개</div>
       </div>
       <div class="detective-box">

@@ -1,8 +1,8 @@
 // ==========================================================================
-// 훈민정음 맞춤법 수호대 - 메인 어플리케이션 엔진
+// 훈민정음 맞춤법 수호대 - 메인 어플리케이션 엔진 (20초 타임어택 & 100+ 무작위 문제)
 // ==========================================================================
 
-import { GAME1_WORDS, GAME2_QUESTIONS, GAME3_QUESTIONS, BOSS_QUESTIONS } from './questions.js';
+import { GAME1_WORDS, GAME2_QUESTIONS, GAME3_QUESTIONS, BOSS_QUESTIONS, getRandomSubarray } from './questions.js';
 import { HANGUL_TOKENS, isBossUnlocked } from './tokens.js';
 import { loginWithGoogle, loginAnonymously, saveScoreToFirestore, getTop5Leaderboard, auth } from './firebase-config.js';
 import { signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
@@ -135,7 +135,6 @@ function showScreen(screenId) {
 }
 
 function initUIEventListeners() {
-  // 로그아웃 / 다른 계정으로 로그인 버튼
   document.getElementById('btnLogout').addEventListener('click', async () => {
     if (auth) {
       try { await signOut(auth); } catch (e) {}
@@ -151,7 +150,6 @@ function initUIEventListeners() {
     showScreen('loginScreen');
   });
 
-  // 익명 로그인
   document.getElementById('btnAnonLogin').addEventListener('click', async () => {
     try {
       const nick = document.getElementById('nicknameInput').value.trim() || '한글선비';
@@ -165,7 +163,6 @@ function initUIEventListeners() {
     }
   });
 
-  // 구글 계정 선택 로그인 버튼
   const btnGoogle = document.getElementById('btnGoogleLogin');
   btnGoogle.addEventListener('click', async () => {
     try {
@@ -213,15 +210,17 @@ function initUIEventListeners() {
 }
 
 // ==========================================================================
-// 🎯 미니게임 1: 맞춤법 터치 (순발력 1분 타임어택)
+// 🎯 미니게임 1: 맞춤법 터치 (순발력 20초 타임어택)
 // ==========================================================================
 let g1Score = 0;
-let g1TimeLeft = 60;
+let g1TimeLeft = 20;
 let g1SpawnInterval = null;
+let g1ActiveWordsPool = [];
 
 function startGame1() {
   g1Score = 0;
-  g1TimeLeft = 60;
+  g1TimeLeft = 20; // 20초로 변경
+  g1ActiveWordsPool = getRandomSubarray(GAME1_WORDS, GAME1_WORDS.length);
   showScreen('game1Screen');
   document.getElementById('g1Score').textContent = g1Score;
   document.getElementById('g1Timer').textContent = g1TimeLeft;
@@ -238,7 +237,7 @@ function startGame1() {
   }, 1000);
 
   spawnFloatingWord();
-  g1SpawnInterval = setInterval(spawnFloatingWord, 1200);
+  g1SpawnInterval = setInterval(spawnFloatingWord, 900); // 20초에 맞게 약간 스피디하게 스폰
 }
 
 function spawnFloatingWord() {
@@ -247,8 +246,8 @@ function spawnFloatingWord() {
     return;
   }
   const stage = document.getElementById('g1Stage');
-  const wordObj = GAME1_WORDS[Math.floor(Math.random() * GAME1_WORDS.length)];
-  const isCorrectType = Math.random() > 0.4;
+  const wordObj = g1ActiveWordsPool[Math.floor(Math.random() * g1ActiveWordsPool.length)];
+  const isCorrectType = Math.random() > 0.35;
   const textToShow = isCorrectType ? wordObj.correct : wordObj.wrong;
 
   const el = document.createElement('div');
@@ -272,11 +271,11 @@ function spawnFloatingWord() {
       document.getElementById('g1Score').textContent = g1Score;
       el.style.background = '#FADBD8';
     }
-    setTimeout(() => el.remove(), 150);
+    setTimeout(() => el.remove(), 120);
   });
 
   stage.appendChild(el);
-  setTimeout(() => { if (el.parentNode) el.remove(); }, 2400);
+  setTimeout(() => { if (el.parentNode) el.remove(); }, 2000);
 }
 
 function endGame1() {
@@ -286,16 +285,18 @@ function endGame1() {
 }
 
 // ==========================================================================
-// ✍️ 미니게임 2: 문장 빈칸 채우기 (선택형 1분 타임어택)
+// ✍️ 미니게임 2: 문장 빈칸 채우기 (선택형 20초 타임어택)
 // ==========================================================================
 let g2Score = 0;
-let g2TimeLeft = 60;
+let g2TimeLeft = 20;
 let g2CurrentIdx = 0;
+let g2QuestionsPool = [];
 
 function startGame2() {
   g2Score = 0;
-  g2TimeLeft = 60;
+  g2TimeLeft = 20; // 20초로 변경
   g2CurrentIdx = 0;
+  g2QuestionsPool = getRandomSubarray(GAME2_QUESTIONS, GAME2_QUESTIONS.length);
   showScreen('game2Screen');
   document.getElementById('g2Score').textContent = g2Score;
   document.getElementById('g2Timer').textContent = g2TimeLeft;
@@ -312,7 +313,7 @@ function startGame2() {
 }
 
 function loadGame2Question() {
-  const q = GAME2_QUESTIONS[g2CurrentIdx % GAME2_QUESTIONS.length];
+  const q = g2QuestionsPool[g2CurrentIdx % g2QuestionsPool.length];
   document.getElementById('g2Sentence').textContent = q.sentence;
 
   const optsContainer = document.getElementById('g2Options');
@@ -343,16 +344,18 @@ function endGame2() {
 }
 
 // ==========================================================================
-// 🔍 미니게임 3: 맞춤법 탐정 (오류 수정형 1분 타임어택)
+// 🔍 미니게임 3: 맞춤법 탐정 (오류 수정형 20초 타임어택)
 // ==========================================================================
 let g3Score = 0;
-let g3TimeLeft = 60;
+let g3TimeLeft = 20;
 let g3CurrentIdx = 0;
+let g3QuestionsPool = [];
 
 function startGame3() {
   g3Score = 0;
-  g3TimeLeft = 60;
+  g3TimeLeft = 20; // 20초로 변경
   g3CurrentIdx = 0;
+  g3QuestionsPool = getRandomSubarray(GAME3_QUESTIONS, GAME3_QUESTIONS.length);
   showScreen('game3Screen');
   document.getElementById('g3Score').textContent = g3Score;
   document.getElementById('g3Timer').textContent = g3TimeLeft;
@@ -369,7 +372,7 @@ function startGame3() {
 }
 
 function loadGame3Question() {
-  const q = GAME3_QUESTIONS[g3CurrentIdx % GAME3_QUESTIONS.length];
+  const q = g3QuestionsPool[g3CurrentIdx % g3QuestionsPool.length];
   const sentenceContainer = document.getElementById('g3Sentence');
   sentenceContainer.innerHTML = '';
   document.getElementById('g3CorrectionArea').style.display = 'none';
@@ -390,11 +393,11 @@ function loadGame3Question() {
         setTimeout(() => {
           g3CurrentIdx++;
           loadGame3Question();
-        }, 800);
+        }, 600);
       } else {
         playSound('wrong');
         span.style.color = 'red';
-        setTimeout(() => span.style.color = '', 400);
+        setTimeout(() => span.style.color = '', 350);
       }
     });
     sentenceContainer.appendChild(span);
@@ -433,28 +436,30 @@ function awardTokenAndClears(msg) {
 }
 
 // ==========================================================================
-// 👑 세종대왕 보스전
+// 👑 세종대왕 보스전 (무작위 10문제 선택)
 // ==========================================================================
 let bossQIdx = 0;
 let bossScore = 0;
 let bossQTimer = null;
 let bossQTimeLeft = 10;
+let bossQuestionsPool = [];
 
 function startBossBattle() {
   bossQIdx = 0;
   bossScore = 0;
+  bossQuestionsPool = getRandomSubarray(BOSS_QUESTIONS, 10); // 10문제 무작위 선택
   showScreen('bossScreen');
   loadBossQuestion();
 }
 
 function loadBossQuestion() {
   clearInterval(bossQTimer);
-  if (bossQIdx >= BOSS_QUESTIONS.length) {
+  if (bossQIdx >= bossQuestionsPool.length) {
     endBossBattle();
     return;
   }
 
-  const q = BOSS_QUESTIONS[bossQIdx];
+  const q = bossQuestionsPool[bossQIdx];
   document.getElementById('bossQIndex').textContent = bossQIdx + 1;
   document.getElementById('bossScore').textContent = bossScore;
   document.getElementById('bossQuestionText').textContent = q.question;
