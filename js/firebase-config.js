@@ -45,22 +45,23 @@ try {
 
 export { auth, db, isFirebaseEnabled };
 
-// 구글 계정 선택 창 강제 호출 (prompt: 'select_account')
 export async function loginWithGoogle() {
   if (!isFirebaseEnabled || !auth) {
-    alert("Firebase 인증 연결을 확인하는 중입니다.");
-    return null;
+    const guestId = "guest_" + Math.random().toString(36).substring(2, 9);
+    return {
+      uid: guestId,
+      displayName: "한글선비_" + guestId.substring(6),
+      isAnonymous: true
+    };
   }
 
   const provider = new GoogleAuthProvider();
-  // 구글 계정 선택 팝업창을 매번 강제로 표시
   provider.setCustomParameters({
     prompt: 'select_account'
   });
 
   try {
     const result = await signInWithPopup(auth, provider);
-    console.log("구글 로그인 성공 유저:", result.user);
     return {
       uid: result.user.uid,
       displayName: result.user.displayName || "구글선비",
@@ -72,7 +73,7 @@ export async function loginWithGoogle() {
       return null;
     }
     if (error.code === 'auth/popup-blocked') {
-      alert("브라우저의 팝업 차단 기능이 활성화되어 있습니다. 주소창 오른쪽 팝업 차단을 해제해 주세요!");
+      alert("브라우저의 팝업 차단 기능이 활성화되어 있습니다. 팝업 차단을 해제해 주세요!");
     } else if (error.code === 'auth/unauthorized-domain') {
       alert("Firebase 콘솔 [Authentication] -> [Settings] -> [Authorized domains]에 현재 주소를 추가해 주세요!");
     } else {
@@ -82,29 +83,28 @@ export async function loginWithGoogle() {
   }
 }
 
+// 게스트(익명) 로그인: Firebase 실패 시에도 100% 로컬 게스트로 즉시 진입 보장
 export async function loginAnonymously() {
-  if (!isFirebaseEnabled || !auth) {
-    const guestId = "anon_" + Math.random().toString(36).substring(2, 9);
-    return {
-      uid: guestId,
-      displayName: "한글학사_" + guestId.substring(5),
-      isAnonymous: true
-    };
-  }
-  try {
-    const result = await signInAnonymously(auth);
-    return {
-      uid: result.user.uid,
-      displayName: "익명선비",
-      isAnonymous: true
-    };
-  } catch (error) {
-    console.error("익명 로그인 실패:", error);
-    if (error.code === 'auth/operation-not-allowed') {
-      alert("Firebase 콘솔에서 '익명 로그인' 수단 활성화가 필요합니다.");
+  if (isFirebaseEnabled && auth) {
+    try {
+      const result = await signInAnonymously(auth);
+      return {
+        uid: result.user.uid,
+        displayName: "익명선비",
+        isAnonymous: true
+      };
+    } catch (error) {
+      console.warn("Firebase 익명 미활성화로 인해 로컬 게스트 모드로 자동 진입합니다:", error);
     }
-    return null;
   }
+
+  // 100% 무조건 성공하는 로컬 게스트 객체 반환
+  const guestId = "guest_" + Math.random().toString(36).substring(2, 9);
+  return {
+    uid: guestId,
+    displayName: "한글선비",
+    isAnonymous: true
+  };
 }
 
 export async function saveScoreToFirestore(userProfile) {
