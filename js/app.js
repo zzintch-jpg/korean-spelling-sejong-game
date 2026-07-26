@@ -1,5 +1,5 @@
 // ==========================================================================
-// 훈민정음 맞춤법 수호대 - 메인 어플리케이션 엔진 (100% 즉시 보장 로그인)
+// 훈민정음 맞춤법 수호대 - 메인 어플리케이션 엔진 (프로필 방어적 정제 & 100% 무결점 로비 진입)
 // ==========================================================================
 
 import { GAME1_WORDS, GAME2_QUESTIONS, GAME3_QUESTIONS, BOSS_QUESTIONS, getRandomSubarray } from './questions.js';
@@ -68,6 +68,15 @@ document.addEventListener('DOMContentLoaded', () => {
   initUIEventListeners();
 });
 
+// 프로필 데이터 타입 방어적 정제 (TypeError: Cannot read properties of undefined 100% 원천 차단)
+function sanitizeProfile() {
+  if (!currentUser.uid) currentUser.uid = 'guest_' + Math.random().toString(36).substr(2, 6);
+  if (!currentUser.displayName) currentUser.displayName = '한글도전자';
+  if (!Array.isArray(currentUser.collectedTokens)) currentUser.collectedTokens = [];
+  if (typeof currentUser.totalClears !== 'number') currentUser.totalClears = 0;
+  if (typeof currentUser.isMaster !== 'boolean') currentUser.isMaster = false;
+}
+
 function loadUserIsolatedProfile(uid) {
   const saved = localStorage.getItem(`sejong_user_${uid}`);
   if (saved) {
@@ -78,48 +87,67 @@ function loadUserIsolatedProfile(uid) {
       console.warn("격리 프로필 파싱 오류:", e);
     }
   }
+  sanitizeProfile();
 }
 
 function handleUserLoggedIn(user) {
-  const inputNick = document.getElementById('nicknameInput').value.trim();
-  currentUser.uid = user.uid;
-  currentUser.displayName = inputNick || user.displayName || '한글도전자';
+  try {
+    const inputNick = document.getElementById('nicknameInput').value.trim();
+    currentUser.uid = user.uid;
+    currentUser.displayName = inputNick || user.displayName || '한글도전자';
 
-  loadUserIsolatedProfile(user.uid);
-  if (inputNick) {
-    currentUser.displayName = inputNick;
+    loadUserIsolatedProfile(user.uid);
+    if (inputNick) {
+      currentUser.displayName = inputNick;
+    }
+    sanitizeProfile();
+
+    saveScoreToFirestore(currentUser);
+    const userBar = document.getElementById('userBar');
+    if (userBar) userBar.style.display = 'flex';
+    showScreen('lobbyScreen');
+  } catch (err) {
+    console.error("로그인 예외 방지 핸들링:", err);
+    sanitizeProfile();
+    showScreen('lobbyScreen');
   }
-
-  saveScoreToFirestore(currentUser);
-  document.getElementById('userBar').style.display = 'flex';
-  showScreen('lobbyScreen');
 }
 
 function updateUI() {
-  document.getElementById('userDisplayName').textContent = currentUser.displayName || '도전자';
-  document.getElementById('tokenCount').textContent = currentUser.collectedTokens.length;
-  document.getElementById('tokenPanelCount').textContent = currentUser.collectedTokens.length;
+  sanitizeProfile();
+
+  const nameEl = document.getElementById('userDisplayName');
+  if (nameEl) nameEl.textContent = currentUser.displayName || '도전자';
+
+  const countEl = document.getElementById('tokenCount');
+  if (countEl) countEl.textContent = currentUser.collectedTokens.length;
+
+  const panelCountEl = document.getElementById('tokenPanelCount');
+  if (panelCountEl) panelCountEl.textContent = currentUser.collectedTokens.length;
 
   const tokenGrid = document.getElementById('tokenGrid');
-  tokenGrid.innerHTML = '';
-
-  HANGUL_TOKENS.forEach(t => {
-    const div = document.createElement('div');
-    const isCollected = currentUser.collectedTokens.includes(t.id);
-    div.className = `token-item ${isCollected ? 'collected' : ''}`;
-    div.textContent = t.char;
-    div.title = `${t.name}: ${t.desc} (${isCollected ? '수집됨' : '미수집'})`;
-    tokenGrid.appendChild(div);
-  });
+  if (tokenGrid) {
+    tokenGrid.innerHTML = '';
+    HANGUL_TOKENS.forEach(t => {
+      const div = document.createElement('div');
+      const isCollected = currentUser.collectedTokens.includes(t.id);
+      div.className = `token-item ${isCollected ? 'collected' : ''}`;
+      div.textContent = t.char;
+      div.title = `${t.name}: ${t.desc} (${isCollected ? '수집됨' : '미수집'})`;
+      tokenGrid.appendChild(div);
+    });
+  }
 
   const bossBtn = document.getElementById('btnBossBattle');
   const bossLockText = document.getElementById('bossLockText');
-  if (isBossUnlocked(currentUser.collectedTokens)) {
-    bossBtn.classList.remove('locked');
-    bossLockText.textContent = "🔥 5개 자음 토큰(ㄱ,ㄴ,ㄷ,ㄹ,ㅁ) 수집 완료! 세종대왕 보스전 도전 가능!";
-  } else {
-    bossBtn.classList.add('locked');
-    bossLockText.textContent = `5개 한글 토큰(ㄱ,ㄴ,ㄷ,ㄹ,ㅁ)을 모아 세종대왕과의 10문제 최종 결투에 도전하세요! (${currentUser.collectedTokens.length}/5)`;
+  if (bossBtn && bossLockText) {
+    if (isBossUnlocked(currentUser.collectedTokens)) {
+      bossBtn.classList.remove('locked');
+      bossLockText.textContent = "🔥 5개 자음 토큰(ㄱ,ㄴ,ㄷ,ㄹ,ㅁ) 수집 완료! 세종대왕 보스전 도전 가능!";
+    } else {
+      bossBtn.classList.add('locked');
+      bossLockText.textContent = `5개 한글 토큰(ㄱ,ㄴ,ㄷ,ㄹ,ㅁ)을 모아 세종대왕과의 10문제 최종 결투에 도전하세요! (${currentUser.collectedTokens.length}/5)`;
+    }
   }
 }
 
@@ -135,77 +163,104 @@ function showScreen(screenId) {
 }
 
 function initUIEventListeners() {
-  document.getElementById('btnLogout').addEventListener('click', async () => {
-    if (auth) {
-      try { await signOut(auth); } catch (e) {}
-    }
-    currentUser = {
-      uid: '',
-      displayName: '',
-      collectedTokens: [],
-      totalClears: 0,
-      isMaster: false
-    };
-    document.getElementById('userBar').style.display = 'none';
-    showScreen('loginScreen');
-  });
-
-  // 게스트 로그인 (100% 즉시 0초 내 로비 진입 보장)
-  document.getElementById('btnAnonLogin').addEventListener('click', async () => {
-    const nick = document.getElementById('nicknameInput').value.trim() || '한글도전자';
-    const user = await loginAnonymously();
-    user.displayName = nick;
-    handleUserLoggedIn(user);
-  });
-
-  // 구글 로그인
-  const btnGoogle = document.getElementById('btnGoogleLogin');
-  btnGoogle.addEventListener('click', async () => {
-    try {
-      const user = await loginWithGoogle();
-      if (user) {
-        handleUserLoggedIn(user);
+  const btnLogout = document.getElementById('btnLogout');
+  if (btnLogout) {
+    btnLogout.addEventListener('click', async () => {
+      if (auth) {
+        try { await signOut(auth); } catch (e) {}
       }
-    } catch (e) {
+      currentUser = {
+        uid: '',
+        displayName: '',
+        collectedTokens: [],
+        totalClears: 0,
+        isMaster: false
+      };
+      const userBar = document.getElementById('userBar');
+      if (userBar) userBar.style.display = 'none';
+      showScreen('loginScreen');
+    });
+  }
+
+  const btnAnon = document.getElementById('btnAnonLogin');
+  if (btnAnon) {
+    btnAnon.addEventListener('click', async () => {
       const nick = document.getElementById('nicknameInput').value.trim() || '한글도전자';
-      const fallbackUser = await loginAnonymously();
-      fallbackUser.displayName = nick;
-      handleUserLoggedIn(fallbackUser);
-    }
-  });
+      const user = await loginAnonymously();
+      user.displayName = nick;
+      handleUserLoggedIn(user);
+    });
+  }
+
+  const btnGoogle = document.getElementById('btnGoogleLogin');
+  if (btnGoogle) {
+    btnGoogle.addEventListener('click', async () => {
+      try {
+        const user = await loginWithGoogle();
+        if (user) {
+          handleUserLoggedIn(user);
+        }
+      } catch (e) {
+        const nick = document.getElementById('nicknameInput').value.trim() || '한글도전자';
+        const fallbackUser = await loginAnonymously();
+        fallbackUser.displayName = nick;
+        handleUserLoggedIn(fallbackUser);
+      }
+    });
+  }
 
   document.querySelectorAll('.btn-back-lobby').forEach(btn => {
     btn.addEventListener('click', () => showScreen('lobbyScreen'));
   });
 
-  document.getElementById('btnGame1').addEventListener('click', () => startGame1());
-  document.getElementById('btnGame2').addEventListener('click', () => startGame2());
-  document.getElementById('btnGame3').addEventListener('click', () => startGame3());
+  const b1 = document.getElementById('btnGame1');
+  if (b1) b1.addEventListener('click', () => startGame1());
 
-  document.getElementById('btnBossBattle').addEventListener('click', () => {
-    if (!isBossUnlocked(currentUser.collectedTokens)) {
-      showModal("보스전 잠김 👑", "5개 한글 자음 토큰(`ㄱ,ㄴ,ㄷ,ㄹ,ㅁ`)을 모두 모아야 세종대왕에게 도전할 수 있습니다!");
-      return;
-    }
-    startBossBattle();
-  });
+  const b2 = document.getElementById('btnGame2');
+  if (b2) b2.addEventListener('click', () => startGame2());
 
-  document.getElementById('btnHallOfFame').addEventListener('click', () => renderHallOfFame('tokens'));
+  const b3 = document.getElementById('btnGame3');
+  if (b3) b3.addEventListener('click', () => startGame3());
 
-  document.getElementById('tabTokens').addEventListener('click', (e) => {
-    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-    e.target.classList.add('active');
-    renderHallOfFame('tokens');
-  });
-  document.getElementById('tabClears').addEventListener('click', (e) => {
-    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-    e.target.classList.add('active');
-    renderHallOfFame('clears');
-  });
+  const bossB = document.getElementById('btnBossBattle');
+  if (bossB) {
+    bossB.addEventListener('click', () => {
+      if (!isBossUnlocked(currentUser.collectedTokens)) {
+        showModal("보스전 잠김 👑", "5개 한글 자음 토큰(`ㄱ,ㄴ,ㄷ,ㄹ,ㅁ`)을 모두 모아야 세종대왕에게 도전할 수 있습니다!");
+        return;
+      }
+      startBossBattle();
+    });
+  }
 
-  document.getElementById('modalBtnClose').addEventListener('click', () => {
-    document.getElementById('modalOverlay').style.display = 'none';
-  });
+  const hallB = document.getElementById('btnHallOfFame');
+  if (hallB) hallB.addEventListener('click', () => renderHallOfFame('tokens'));
+
+  const tabT = document.getElementById('tabTokens');
+  if (tabT) {
+    tabT.addEventListener('click', (e) => {
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      e.target.classList.add('active');
+      renderHallOfFame('tokens');
+    });
+  }
+
+  const tabC = document.getElementById('tabClears');
+  if (tabC) {
+    tabC.addEventListener('click', (e) => {
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      e.target.classList.add('active');
+      renderHallOfFame('clears');
+    });
+  }
+
+  const modalC = document.getElementById('modalBtnClose');
+  if (modalC) {
+    modalC.addEventListener('click', () => {
+      const modal = document.getElementById('modalOverlay');
+      if (modal) modal.style.display = 'none';
+    });
+  }
 }
 
 // ==========================================================================
@@ -583,36 +638,42 @@ function endBossBattle() {
 async function renderHallOfFame(type) {
   showScreen('hallScreen');
   const tbody = document.getElementById('leaderboardBody');
-  tbody.innerHTML = '<tr><td colspan="4">명예의 전당 기록을 조회 중입니다...</td></tr>';
+  if (tbody) tbody.innerHTML = '<tr><td colspan="4">명예의 전당 기록을 조회 중입니다...</td></tr>';
 
-  document.getElementById('thMetricLabel').textContent = (type === 'tokens') ? '토큰 수' : '클리어 횟수';
+  const labelEl = document.getElementById('thMetricLabel');
+  if (labelEl) labelEl.textContent = (type === 'tokens') ? '토큰 수' : '클리어 횟수';
 
   const { topTokens, topClears } = await getTop5Leaderboard();
   const targetList = (type === 'tokens') ? topTokens : topClears;
 
-  tbody.innerHTML = '';
-  if (!targetList || targetList.length === 0) {
-    tbody.innerHTML = '<tr><td colspan="4">아직 등록된 명예의 전당 기록이 없습니다. 차례로 도전해 보세요!</td></tr>';
-    return;
+  if (tbody) {
+    tbody.innerHTML = '';
+    if (!targetList || targetList.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="4">아직 등록된 명예의 전당 기록이 없습니다. 차례로 도전해 보세요!</td></tr>';
+      return;
+    }
+
+    targetList.forEach((user, idx) => {
+      const tr = document.createElement('tr');
+      const metricVal = (type === 'tokens') ? `${user.tokensCount || (user.collectedTokens ? user.collectedTokens.length : 0)}개` : `${user.totalClears || 0}회`;
+      const masterBadgeHtml = user.isMaster ? `<span class="master-badge">👑 훈민정음 마스터</span>` : '';
+
+      tr.innerHTML = `
+        <td><strong>${idx + 1}위</strong></td>
+        <td>${user.displayName || '익명 도전자'} ${masterBadgeHtml}</td>
+        <td>${metricVal}</td>
+        <td>${idx === 0 ? '🥇 으뜸' : (idx === 1 ? '🥈 버금' : '🥉 으뜸이')}</td>
+      `;
+      tbody.appendChild(tr);
+    });
   }
-
-  targetList.forEach((user, idx) => {
-    const tr = document.createElement('tr');
-    const metricVal = (type === 'tokens') ? `${user.tokensCount || (user.collectedTokens ? user.collectedTokens.length : 0)}개` : `${user.totalClears || 0}회`;
-    const masterBadgeHtml = user.isMaster ? `<span class="master-badge">👑 훈민정음 마스터</span>` : '';
-
-    tr.innerHTML = `
-      <td><strong>${idx + 1}위</strong></td>
-      <td>${user.displayName || '익명 도전자'} ${masterBadgeHtml}</td>
-      <td>${metricVal}</td>
-      <td>${idx === 0 ? '🥇 으뜸' : (idx === 1 ? '🥈 버금' : '🥉 으뜸이')}</td>
-    `;
-    tbody.appendChild(tr);
-  });
 }
 
 function showModal(title, msg) {
-  document.getElementById('modalTitle').textContent = title;
-  document.getElementById('modalMessage').innerHTML = msg;
-  document.getElementById('modalOverlay').style.display = 'flex';
+  const tEl = document.getElementById('modalTitle');
+  if (tEl) tEl.textContent = title;
+  const mEl = document.getElementById('modalMessage');
+  if (mEl) mEl.innerHTML = msg;
+  const modal = document.getElementById('modalOverlay');
+  if (modal) modal.style.display = 'flex';
 }
