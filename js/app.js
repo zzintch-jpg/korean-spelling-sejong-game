@@ -6,7 +6,6 @@ import { GAME1_WORDS, GAME2_QUESTIONS, GAME3_QUESTIONS, BOSS_QUESTIONS } from '.
 import { HANGUL_TOKENS, isBossUnlocked } from './tokens.js';
 import { loginWithGoogle, loginAnonymously, saveScoreToFirestore, getTop5Leaderboard } from './firebase-config.js';
 
-// --- Web Audio API 사운드 효과음 세트 ---
 const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 
 function playSound(type) {
@@ -53,7 +52,6 @@ function playSound(type) {
   }
 }
 
-// --- 유저 프로필 상태 ---
 let currentUser = {
   uid: '',
   displayName: '',
@@ -140,10 +138,19 @@ function initUIEventListeners() {
     }
   });
 
-  // 구글 로그인
-  document.getElementById('btnGoogleLogin').addEventListener('click', async () => {
+  // 구글 로그인 (중복 클릭 방지 처리)
+  const btnGoogle = document.getElementById('btnGoogleLogin');
+  btnGoogle.addEventListener('click', async () => {
+    btnGoogle.disabled = true;
+    btnGoogle.style.opacity = '0.6';
     try {
       const user = await loginWithGoogle();
+      if (!user) {
+        btnGoogle.disabled = false;
+        btnGoogle.style.opacity = '1';
+        return;
+      }
+
       const nick = document.getElementById('nicknameInput').value.trim() || user.displayName || '한글학사';
       currentUser.uid = user.uid;
       currentUser.displayName = nick;
@@ -156,6 +163,9 @@ function initUIEventListeners() {
       showScreen('lobbyScreen');
     } catch (e) {
       alert("⚠️ 구글 로그인 오류 안내:\n\n" + e.message);
+    } finally {
+      btnGoogle.disabled = false;
+      btnGoogle.style.opacity = '1';
     }
   });
 

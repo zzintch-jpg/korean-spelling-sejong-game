@@ -46,9 +46,15 @@ try {
 
 export { auth, db, isFirebaseEnabled };
 
-// 구글 로그인 처리 및 에러 진단
+let isLoggingIn = false;
+
+// 구글 로그인 처리 및 예외 핸들링
 export async function loginWithGoogle() {
+  if (isLoggingIn) return null;
+  isLoggingIn = true;
+
   if (!isFirebaseEnabled || !auth) {
+    isLoggingIn = false;
     const guestId = "guest_" + Math.random().toString(36).substring(2, 9);
     return {
       uid: guestId,
@@ -56,23 +62,33 @@ export async function loginWithGoogle() {
       isAnonymous: true
     };
   }
+
   const provider = new GoogleAuthProvider();
   try {
     const result = await signInWithPopup(auth, provider);
+    isLoggingIn = false;
     return {
       uid: result.user.uid,
       displayName: result.user.displayName || "구글선비",
       isAnonymous: false
     };
   } catch (error) {
-    console.error("구글 로그인 실패 원인 상세:", error);
+    isLoggingIn = false;
+    console.error("구글 로그인 에러:", error);
+
+    // 중복 팝업 취소 에러는 사용자에게 불필요한 경고창을 띄우지 않고 무시합니다.
+    if (error.code === 'auth/cancelled-popup-request') {
+      console.log("이전 로그인 팝업이 취소되었습니다.");
+      return null;
+    }
+    
     let errorMsg = error.message;
     if (error.code === 'auth/unauthorized-domain') {
       errorMsg = "Firebase 콘솔의 [Authentication] -> [설정] -> [승인된 도메인]에 현재 도메인(korean-spelling-sejong-game.vercel.app)을 추가해 주세요!";
     } else if (error.code === 'auth/operation-not-allowed') {
       errorMsg = "Firebase 콘솔의 [Authentication] -> [로그인 방법]에서 'Google' 로그인을 활성화(사용 설정)해 주세요!";
     } else if (error.code === 'auth/popup-closed-by-user') {
-      errorMsg = "로그인 팝업 창이 닫혔습니다. 다시 시도해 주세요.";
+      errorMsg = "로그인 팝업 창이 닫혔습니다. 다시 클릭해 시도해 주세요.";
     }
     throw new Error(errorMsg);
   }
