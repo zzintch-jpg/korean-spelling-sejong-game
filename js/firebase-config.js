@@ -20,40 +20,26 @@ import {
   limit 
 } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-// 환경변수 또는 글로벌 설정 객체에서 안전하게 파싱 (기본 설정 지원)
-const getEnv = (key) => {
-  if (typeof import.meta !== 'undefined' && import.meta.env && import.meta.env[key]) {
-    return import.meta.env[key];
-  }
-  if (typeof window !== 'undefined' && window.ENV && window.ENV[key]) {
-    return window.ENV[key];
-  }
-  return "";
-};
-
-// 💡 Firebase 발급 정보 설정 (필요시 직접 설정 가능)
+// 실제 발급받으신 Firebase 연동 키 적용
 const firebaseConfig = {
-  apiKey: getEnv("VITE_FIREBASE_API_KEY") || "YOUR_FIREBASE_API_KEY",
-  authDomain: getEnv("VITE_FIREBASE_AUTH_DOMAIN") || "your-app.firebaseapp.com",
-  projectId: getEnv("VITE_FIREBASE_PROJECT_ID") || "your-app-id",
-  storageBucket: getEnv("VITE_FIREBASE_STORAGE_BUCKET") || "your-app.appspot.com",
-  messagingSenderId: getEnv("VITE_FIREBASE_MESSAGING_SENDER_ID") || "1234567890",
-  appId: getEnv("VITE_FIREBASE_APP_ID") || "1:1234567890:web:1234567890"
+  apiKey: "AIzaSyAyxeADFo1G1B9ygrFwlIy6xJ6cVYC4g74",
+  authDomain: "korean-spelling-game.firebaseapp.com",
+  projectId: "korean-spelling-game",
+  storageBucket: "korean-spelling-game.firebasestorage.app",
+  messagingSenderId: "872580272306",
+  appId: "1:872580272306:web:214d9d45e2c37cbc59f9ab",
+  measurementId: "G-5MDSD794P0"
 };
 
 let app, auth, db;
 let isFirebaseEnabled = false;
 
 try {
-  if (firebaseConfig.apiKey && firebaseConfig.apiKey !== "YOUR_FIREBASE_API_KEY") {
-    app = initializeApp(firebaseConfig);
-    auth = getAuth(app);
-    db = getFirestore(app);
-    isFirebaseEnabled = true;
-    console.log("🔥 Firebase가 초기화되었습니다.");
-  } else {
-    console.log("ℹ️ Firebase 키 설정 전: 로컬 격리 모드로 구동 중입니다.");
-  }
+  app = initializeApp(firebaseConfig);
+  auth = getAuth(app);
+  db = getFirestore(app);
+  isFirebaseEnabled = true;
+  console.log("🔥 Firebase가 완벽하게 연결되었습니다!");
 } catch (e) {
   console.warn("Firebase 초기화 오류:", e);
 }
@@ -67,8 +53,7 @@ export async function loginWithGoogle() {
     return {
       uid: guestId,
       displayName: "한글선비_" + guestId.substring(6),
-      isAnonymous: true,
-      isFallback: true
+      isAnonymous: true
     };
   }
   const provider = new GoogleAuthProvider();
