@@ -1,5 +1,5 @@
 // ==========================================================================
-// 훈민정음 맞춤법 수호대 - 메인 어플리케이션 엔진 (실시간 정답 & 오답 개수 표시)
+// 훈민정음 맞춤법 수호대 - 메인 어플리케이션 엔진 (터치 낱말 블록 동적 오버플로 방지)
 // ==========================================================================
 
 import { GAME1_WORDS, GAME2_QUESTIONS, GAME3_QUESTIONS, BOSS_QUESTIONS, getRandomSubarray } from './questions.js';
@@ -210,7 +210,7 @@ function initUIEventListeners() {
 }
 
 // ==========================================================================
-// 🎯 미니게임 1: 맞춤법 터치 (실시간 정답/오답 집계)
+// 🎯 미니게임 1: 맞춤법 터치 (낱말 잘림 방지 동적 좌표 계산)
 // ==========================================================================
 let g1Score = 0;
 let g1Wrong = 0;
@@ -257,8 +257,17 @@ function spawnFloatingWord() {
   el.className = 'floating-word';
   el.textContent = textToShow;
 
-  const posX = Math.random() * (stage.clientWidth - 160);
-  const posY = Math.random() * (stage.clientHeight - 70);
+  // DOM 배치 후 실제 요소의 폭과 높이를 기반으로 오버플로 없이 완벽히 내부에 배치
+  stage.appendChild(el);
+  const elWidth = el.offsetWidth || 280;
+  const elHeight = el.offsetHeight || 90;
+
+  const maxLeft = Math.max(15, stage.clientWidth - elWidth - 25);
+  const maxTop = Math.max(15, stage.clientHeight - elHeight - 25);
+
+  const posX = Math.floor(Math.random() * maxLeft) + 12;
+  const posY = Math.floor(Math.random() * maxTop) + 12;
+
   el.style.left = `${posX}px`;
   el.style.top = `${posY}px`;
 
@@ -267,7 +276,8 @@ function spawnFloatingWord() {
       playSound('correct');
       g1Score++;
       document.getElementById('g1Score').textContent = g1Score;
-      el.style.background = '#A9DFBF';
+      el.style.background = '#C8E6C9';
+      el.style.borderColor = '#2E7D32';
 
       if (g1Score >= 10) {
         endGame1(true);
@@ -276,12 +286,12 @@ function spawnFloatingWord() {
       playSound('wrong');
       g1Wrong++;
       document.getElementById('g1Wrong').textContent = g1Wrong;
-      el.style.background = '#FADBD8';
+      el.style.background = '#FFCDD2';
+      el.style.borderColor = '#C62828';
     }
     setTimeout(() => el.remove(), 120);
   });
 
-  stage.appendChild(el);
   setTimeout(() => { if (el.parentNode) el.remove(); }, 2200);
 }
 
@@ -297,7 +307,7 @@ function endGame1(isSuccess) {
 }
 
 // ==========================================================================
-// ✍️ 미니게임 2: 문장 빈칸 채우기 (실시간 정답/오답 집계)
+// ✍️ 미니게임 2: 문장 빈칸 채우기
 // ==========================================================================
 let g2Score = 0;
 let g2Wrong = 0;
@@ -370,7 +380,7 @@ function endGame2(isSuccess) {
 }
 
 // ==========================================================================
-// 🔍 미니게임 3: 맞춤법 탐정 (실시간 정답/오답 집계)
+// 🔍 미니게임 3: 맞춤법 탐정
 // ==========================================================================
 let g3Score = 0;
 let g3Wrong = 0;

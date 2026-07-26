@@ -10,14 +10,14 @@
   /* 세련된 럭셔리 한옥 팔레트 */
   --bg-gradient: radial-gradient(circle at 50% 30%, #FDFBF7 0%, #EFE8DA 100%);
   --color-container-bg: #FFFFFF;
-  --color-header-bg: linear-gradient(135deg, #1C2541 0%, #0B132B 100%); /* 조선 왕실 남색 (Deep Indigo) */
-  --color-gold-primary: #C5A059; /* 고급 앤티크 골드 */
-  --color-gold-bright: #F3C623;  /* 밝은 샴페인 골드 */
+  --color-header-bg: linear-gradient(135deg, #1C2541 0%, #0B132B 100%);
+  --color-gold-primary: #C5A059;
+  --color-gold-bright: #F3C623;
   --color-gold-dark: #8C6D2D;
-  --color-royal-red: #9E2A2B;   /* 고급 다홍 붉은색 */
+  --color-royal-red: #9E2A2B;
   --color-royal-red-dark: #6E1A1B;
-  --color-text-dark: #1E2022;   /* 깊은 먹색 */
-  --color-text-sub: #545B62;    /* 차분한 그레이 */
+  --color-text-dark: #1E2022;
+  --color-text-sub: #545B62;
   --color-card-bg: #FFFFFF;
   --color-card-border: #E8E2D5;
   
@@ -48,7 +48,7 @@ body {
   box-sizing: border-box;
 }
 
-/* 메인 와이드 컨테이너 (세련된 하이엔드 프레임) */
+/* 메인 와이드 컨테이너 */
 .app-container {
   width: 98%;
   max-width: 1400px;
@@ -64,7 +64,7 @@ body {
   margin: auto;
 }
 
-/* 헤더 비주얼 (조선 왕실 딥 인디고 & 메탈릭 골드) */
+/* 헤더 비주얼 */
 header {
   background: var(--color-header-bg);
   color: var(--color-gold-bright);
@@ -109,7 +109,7 @@ h1.game-title {
   font-weight: 400;
 }
 
-/* 유저 정보 바 (세련된 차분한 톤) */
+/* 유저 정보 바 */
 .user-bar {
   background: linear-gradient(to right, #F8F9FA, #F1F3F5);
   padding: 14px 36px;
@@ -179,7 +179,7 @@ h1.game-title {
   to { opacity: 1; transform: translateY(0); }
 }
 
-/* 세련된 럭셔리 버튼 모듈 */
+/* 버튼 모듈 */
 .btn {
   font-family: var(--font-straight);
   font-size: 1.35rem;
@@ -203,7 +203,7 @@ h1.game-title {
   transform: translateY(-3px);
   box-shadow: 0 10px 24px rgba(0,0,0,0.12);
   border-color: var(--color-gold-primary);
-  background: #FFFCF5;
+  background: #FFFDF9;
 }
 
 .btn-primary {
@@ -232,7 +232,7 @@ h1.game-title {
   box-shadow: 0 10px 26px rgba(197, 160, 89, 0.5);
 }
 
-/* 1. 대형 로그인 스크린 카드 */
+/* 1. 로그인 스크린 카드 */
 .login-box {
   text-align: center;
   max-width: 720px;
@@ -351,7 +351,7 @@ h1.game-title {
   transform: scale(1.12);
 }
 
-/* 3종 미니게임 세련된 카드 디자인 */
+/* 3종 미니게임 카드 */
 .minigame-horizontal-row {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
@@ -401,7 +401,7 @@ h1.game-title {
   line-height: 1.4;
 }
 
-/* 세종대왕 보스전 프리미엄 블랙 & 골드 대형 배너 */
+/* 세종대왕 보스전 배너 */
 .boss-banner-card {
   width: 100%;
   background: linear-gradient(135deg, #1C2541 0%, #0B132B 100%);
@@ -518,7 +518,7 @@ h1.game-title {
   border: 2px solid #EF9A9A;
 }
 
-/* 🎯 미니게임 1 터치 무대 (깔끔하고 고급스러운 필드) */
+/* 🎯 미니게임 1 터치 무대 (잘림 100% 방지 및 글씨 대폭 확대) */
 .touch-game-stage {
   width: 100%;
   height: 520px;
@@ -527,20 +527,26 @@ h1.game-title {
   border-radius: 24px;
   position: relative;
   overflow: hidden;
+  box-sizing: border-box;
 }
 
+/* Floating 낱말 카드 글씨 2.5rem 대폭 확대 및 줄바꿈 차단 */
 .floating-word {
   position: absolute;
-  padding: 16px 34px;
+  padding: 18px 42px;
   background: #FFFFFF;
-  border: 3px solid var(--color-text-dark);
+  border: 4px solid #1C2541;
   border-radius: 50px;
   font-family: var(--font-straight);
-  font-size: 2rem;
+  font-size: 2.5rem;
   font-weight: 700;
+  color: #1C2541;
   cursor: pointer;
-  box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+  box-shadow: 0 10px 24px rgba(0,0,0,0.18);
   transition: transform 0.1s ease;
+  white-space: nowrap;
+  line-height: 1.1;
+  z-index: 10;
 }
 
 .floating-word:active {
@@ -826,4 +832,5 @@ h1.game-title {
   h1.game-title { font-size: 2.4rem; }
   .question-sentence, .detective-sentence, .word-span { font-size: 1.6rem; }
   .score-status-box { flex-direction: column; gap: 6px; }
+  .floating-word { font-size: 1.8rem; padding: 12px 24px; }
 }
