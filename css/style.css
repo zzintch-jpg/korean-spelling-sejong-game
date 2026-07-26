@@ -71,26 +71,26 @@ body {
 header {
   background: linear-gradient(135deg, #2D1410 0%, #4A2E2B 50%, #1A0C08 100%);
   color: var(--color-gold);
-  padding: 24px 30px;
+  padding: 22px 30px;
   text-align: center;
   border-bottom: 5px solid var(--color-gold);
   position: relative;
   box-shadow: 0 4px 15px rgba(0,0,0,0.4);
 }
 
-header::before, header::after {
-  content: '❖';
-  color: var(--color-gold-bright);
-  font-size: 1.8rem;
-  margin: 0 14px;
-  vertical-align: middle;
-}
-
 .header-title-box {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 14px;
+  gap: 16px;
+}
+
+.title-decor {
+  color: var(--color-gold-bright);
+  font-size: 1.8rem;
+  line-height: 1;
+  display: inline-block;
+  vertical-align: middle;
 }
 
 h1.game-title {
@@ -100,13 +100,14 @@ h1.game-title {
   color: var(--color-gold);
   text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.8), 0 0 12px rgba(212, 175, 55, 0.4);
   line-height: 1;
+  display: inline-block;
 }
 
 .subtitle {
   font-family: var(--font-body);
   font-size: 1.05rem;
   color: #E0D5C1;
-  margin-top: 8px;
+  margin-top: 10px;
   letter-spacing: 1px;
 }
 
@@ -381,7 +382,7 @@ h1.game-title {
   line-height: 1.4;
 }
 
-/* 세종대왕 보스전 대형 단독 배너 (웅장하고 눈에 띄는 디자인) */
+/* 세종대왕 보스전 대형 단독 배너 */
 .boss-banner-card {
   width: 100%;
   background: linear-gradient(135deg, #3A1C1A 0%, #1F0C09 100%);
@@ -574,7 +575,7 @@ h1.game-title {
   transform: translateX(4px);
 }
 
-/* 명예의 전당 (리더보드) */
+/* 명예의 전당 */
 .hall-container {
   width: 100%;
   max-width: 750px;
