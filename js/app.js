@@ -22,9 +22,9 @@ function playSound(type) {
 
   if (type === 'correct') {
     osc.type = 'sine';
-    osc.frequency.setValueAtTime(523.25, now); // C5
-    osc.frequency.exponentialRampToValueAtTime(659.25, now + 0.1); // E5
-    osc.frequency.exponentialRampToValueAtTime(783.99, now + 0.2); // G5
+    osc.frequency.setValueAtTime(523.25, now);
+    osc.frequency.exponentialRampToValueAtTime(659.25, now + 0.1);
+    osc.frequency.exponentialRampToValueAtTime(783.99, now + 0.2);
     gain.gain.setValueAtTime(0.3, now);
     gain.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
     osc.start(now);
@@ -69,7 +69,6 @@ document.addEventListener('DOMContentLoaded', () => {
   initUIEventListeners();
 });
 
-// 사용자별 격리 프로필 불러오기 (개인정보 & 토큰 상태 사용자 분리)
 function loadUserIsolatedProfile(uid) {
   const saved = localStorage.getItem(`sejong_user_${uid}`);
   if (saved) {
@@ -122,21 +121,26 @@ function showScreen(screenId) {
 }
 
 function initUIEventListeners() {
-  // 로그인 이벤트
+  // 익명 로그인
   document.getElementById('btnAnonLogin').addEventListener('click', async () => {
-    const nick = document.getElementById('nicknameInput').value.trim() || '한글선비';
-    const user = await loginAnonymously();
-    currentUser.uid = user.uid;
-    currentUser.displayName = nick;
-    
-    loadUserIsolatedProfile(user.uid);
-    currentUser.displayName = nick; // 입력된 닉네임 우선 적용
-    
-    await saveScoreToFirestore(currentUser);
-    document.getElementById('userBar').style.display = 'flex';
-    showScreen('lobbyScreen');
+    try {
+      const nick = document.getElementById('nicknameInput').value.trim() || '한글선비';
+      const user = await loginAnonymously();
+      currentUser.uid = user.uid;
+      currentUser.displayName = nick;
+      
+      loadUserIsolatedProfile(user.uid);
+      currentUser.displayName = nick;
+      
+      await saveScoreToFirestore(currentUser);
+      document.getElementById('userBar').style.display = 'flex';
+      showScreen('lobbyScreen');
+    } catch (e) {
+      alert("로그인 안내: " + e.message);
+    }
   });
 
+  // 구글 로그인
   document.getElementById('btnGoogleLogin').addEventListener('click', async () => {
     try {
       const user = await loginWithGoogle();
@@ -151,7 +155,7 @@ function initUIEventListeners() {
       document.getElementById('userBar').style.display = 'flex';
       showScreen('lobbyScreen');
     } catch (e) {
-      alert("로그인 처리 중 오류가 발생했습니다.");
+      alert("⚠️ 구글 로그인 오류 안내:\n\n" + e.message);
     }
   });
 
@@ -490,7 +494,7 @@ function endBossBattle() {
 }
 
 // ==========================================================================
-// 🏛️ 명예의 전당 (개인정보 노출 방지 처리된 리더보드)
+// 🏛️ 명예의 전당
 // ==========================================================================
 async function renderHallOfFame(type) {
   showScreen('hallScreen');
@@ -513,7 +517,6 @@ async function renderHallOfFame(type) {
     const metricVal = (type === 'tokens') ? `${user.tokensCount || (user.collectedTokens ? user.collectedTokens.length : 0)}개` : `${user.totalClears || 0}회`;
     const masterBadgeHtml = user.isMaster ? `<span class="master-badge">👑 훈민정음 마스터</span>` : '';
 
-    // 개인정보 보호: 닉네임만 표시 (이메일 등 식별정보 노출 차단)
     tr.innerHTML = `
       <td><strong>${idx + 1}위</strong></td>
       <td>${user.displayName || '익명 선비'} ${masterBadgeHtml}</td>
