@@ -8,7 +8,11 @@
   <meta http-equiv="Expires" content="0">
   <title>훈민정음 수호대 - 초등 맞춤법 미니게임 & 세종대왕 도전기</title>
   <meta name="description" content="초등학생을 위한 맞춤법 연습 미니게임 3종과 세종대왕 보스전! 훈민정음 한글 토큰을 모아 훈민정음 마스터에 도전하세요.">
-  <link rel="stylesheet" href="css/style.css?v=3.2.0">
+  <link rel="stylesheet" href="css/style.css?v=3.3.0">
+  
+  <!-- Firebase SDK Compat 라이브러리 (실제 구글 계정 팝업 창 즉시 호출) -->
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
 </head>
 <body>
 
@@ -235,21 +239,6 @@
       </div>
     </section>
 
-    <!-- 🌐 구글 계정 로그인 레이어 모달 -->
-    <div id="googleAuthModal" class="modal-overlay" style="display:none;">
-      <div class="modal-card">
-        <h3 style="color: #1C2541;">🌐 Google 계정 로그인</h3>
-        <p style="margin: 16px 0; font-size: 1.3rem; color: #545B62;">Google 계정 이메일 또는 구글 닉네임을 입력하세요</p>
-        <div class="input-group" style="margin-bottom: 24px;">
-          <input type="text" id="googleEmailInput" placeholder="예: sejong@gmail.com 또는 구글선비" style="width: 100%; padding: 18px; font-size: 1.4rem; border-radius: 14px; border: 2px solid #C5A059; text-align: center;">
-        </div>
-        <div style="display: flex; gap: 16px; justify-content: center;">
-          <button id="btnGoogleSubmit" class="btn btn-gold" style="flex: 1;">구글 로그인 완료</button>
-          <button id="btnGoogleCancel" class="btn" style="flex: 1;">취소</button>
-        </div>
-      </div>
-    </div>
-
     <!-- 결과 알림 모달 -->
     <div id="modalOverlay" class="modal-overlay">
       <div class="modal-card">
@@ -261,6 +250,6 @@
 
   </div>
 
-  <script src="js/app.js?v=3.2.0"></script>
+  <script src="js/app.js?v=3.3.0"></script>
 </body>
 </html>
