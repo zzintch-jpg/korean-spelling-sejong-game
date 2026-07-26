@@ -2,12 +2,13 @@
    조선시대 전통 테마 & 훈민정음 맞춤법 미니게임 프리미엄 디자인 시스템
    ========================================================================== */
 
-@import url('https://fonts.googleapis.com/css2?family=East+Sea+Dokdo&family=Gowun+Batang:wght@400;700&family=Nanum+Myeongjo:wght@400;700;800&family=Do+Hyeon&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=East+Sea+Dokdo&family=Gowun+Batang:wght@400;700&family=Nanum+Myeongjo:wght@400;700;800&family=Do+Hyeon&family=Noto+Sans+KR:wght@500;700&display=swap');
 
 :root {
   --font-calligraphy: 'East Sea Dokdo', 'Gowun Batang', serif;
   --font-title: 'Nanum Myeongjo', 'Gowun Batang', serif;
   --font-body: 'Gowun Batang', 'Nanum Myeongjo', serif;
+  --font-straight: 'Do Hyeon', 'Noto Sans KR', sans-serif;
 
   /* 전통 칼라 팔레트 */
   --color-paper: #F5EFE0;
@@ -111,7 +112,7 @@ h1.game-title {
   letter-spacing: 1px;
 }
 
-/* 유저 정보 바 (로그아웃 버튼 추가) */
+/* 유저 정보 바 */
 .user-bar {
   background: linear-gradient(to right, #FAF3E0, #EDE2CD);
   padding: 12px 24px;
@@ -136,9 +137,9 @@ h1.game-title {
 }
 
 .btn-logout {
-  font-family: var(--font-body);
-  font-size: 0.85rem;
-  padding: 4px 10px;
+  font-family: var(--font-straight);
+  font-size: 0.9rem;
+  padding: 4px 12px;
   border: 1.5px solid #8D6E63;
   border-radius: 6px;
   background: #FFF;
@@ -183,12 +184,12 @@ h1.game-title {
   to { opacity: 1; transform: translateY(0); }
 }
 
-/* 버튼 공통 스타일 */
+/* 버튼 공통 스타일 (기본 반듯한 서체) */
 .btn {
-  font-family: var(--font-title);
+  font-family: var(--font-straight);
   font-size: 1.25rem;
-  font-weight: 700;
-  padding: 12px 28px;
+  letter-spacing: 0.5px;
+  padding: 13px 28px;
   border: 3px solid #5D4037;
   border-radius: 12px;
   background: linear-gradient(to bottom, #FFF8E7, #EFE6D5);
@@ -227,7 +228,7 @@ h1.game-title {
   border-color: #7D6608;
 }
 
-/* 1. 로그인 스크린 */
+/* 1. 로그인 스크린 (반듯한 서체 적용) */
 .login-box {
   text-align: center;
   max-width: 480px;
@@ -241,21 +242,23 @@ h1.game-title {
 }
 
 .login-box h2 {
-  font-family: var(--font-title);
-  font-size: 2.2rem;
+  font-family: var(--font-straight);
+  font-size: 2.3rem;
   color: var(--color-brown-dark);
   margin-bottom: 12px;
+  letter-spacing: 1px;
 }
 
 .login-box p {
+  font-family: var(--font-straight);
   color: #5D4037;
   margin-bottom: 24px;
-  font-size: 1.05rem;
+  font-size: 1.1rem;
   line-height: 1.6;
 }
 
 .input-group input {
-  font-family: var(--font-body);
+  font-family: var(--font-straight);
   width: 100%;
   padding: 14px 18px;
   font-size: 1.15rem;
@@ -277,7 +280,12 @@ h1.game-title {
   margin-top: 18px;
 }
 
-/* 2. 메인 로비 레이아웃 (수평 3종 미니게임 + 세종대왕 보스전 대형 배너) */
+.login-buttons .btn {
+  font-family: var(--font-straight);
+  font-size: 1.3rem;
+}
+
+/* 2. 메인 로비 레이아웃 */
 .lobby-container {
   width: 100%;
   display: flex;
@@ -295,8 +303,8 @@ h1.game-title {
 }
 
 .token-inventory-panel h3 {
-  font-family: var(--font-title);
-  font-size: 1.25rem;
+  font-family: var(--font-straight);
+  font-size: 1.3rem;
   color: var(--color-brown-dark);
   margin-bottom: 12px;
 }
@@ -316,9 +324,8 @@ h1.game-title {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-family: var(--font-title);
-  font-size: 1.35rem;
-  font-weight: 700;
+  font-family: var(--font-straight);
+  font-size: 1.4rem;
   background: #E0E0E0;
   color: #9E9E9E;
   border: 2px solid #BDBDBD;
@@ -333,7 +340,7 @@ h1.game-title {
   transform: scale(1.1);
 }
 
-/* 3종 미니게임 수평 배치 (Horizontal 3-column row) */
+/* 3종 미니게임 수평 배치 */
 .minigame-horizontal-row {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
@@ -370,14 +377,15 @@ h1.game-title {
 }
 
 .menu-card h4 {
-  font-family: var(--font-title);
-  font-size: 1.35rem;
+  font-family: var(--font-straight);
+  font-size: 1.4rem;
   color: var(--color-brown-dark);
   margin-bottom: 6px;
 }
 
 .menu-card p {
-  font-size: 0.9rem;
+  font-family: var(--font-straight);
+  font-size: 0.95rem;
   color: #6D4C41;
   line-height: 1.4;
 }
@@ -430,7 +438,8 @@ h1.game-title {
 }
 
 .boss-banner-info p {
-  font-size: 1rem;
+  font-family: var(--font-straight);
+  font-size: 1.05rem;
   color: #FFF8E7;
   margin-top: 4px;
 }
@@ -443,9 +452,8 @@ h1.game-title {
   display: inline-block;
   padding: 10px 20px;
   border-radius: 30px;
-  font-family: var(--font-title);
+  font-family: var(--font-straight);
   font-size: 1.2rem;
-  font-weight: 700;
   background: linear-gradient(135deg, var(--color-gold), #B7950B);
   color: #FFF;
   box-shadow: 0 4px 10px rgba(0,0,0,0.3);
@@ -457,7 +465,7 @@ h1.game-title {
   box-shadow: none;
 }
 
-/* 게임 1~3 스테이지 디자인 */
+/* 스테이지 디자인 */
 .game-header {
   width: 100%;
   display: flex;
@@ -471,13 +479,13 @@ h1.game-title {
 }
 
 .timer-box {
-  font-family: var(--font-title);
+  font-family: var(--font-straight);
   font-size: 1.5rem;
   color: var(--color-dancheong-red);
 }
 
 .score-box {
-  font-family: var(--font-title);
+  font-family: var(--font-straight);
   font-size: 1.5rem;
   color: var(--color-dancheong-green);
 }
@@ -498,9 +506,8 @@ h1.game-title {
   background: #FFF;
   border: 3px solid #5D4037;
   border-radius: 35px;
-  font-family: var(--font-title);
+  font-family: var(--font-straight);
   font-size: 1.4rem;
-  font-weight: 700;
   cursor: pointer;
   box-shadow: 0 4px 10px rgba(0,0,0,0.18);
   transition: transform 0.1s ease;
@@ -558,7 +565,7 @@ h1.game-title {
 }
 
 .boss-opt-btn {
-  font-family: var(--font-body);
+  font-family: var(--font-straight);
   padding: 16px 22px;
   font-size: 1.2rem;
   border: 2px solid var(--color-gold);
@@ -590,7 +597,7 @@ h1.game-title {
 .tab-btn {
   flex: 1;
   padding: 12px;
-  font-family: var(--font-title);
+  font-family: var(--font-straight);
   font-size: 1.2rem;
   border: 2px solid #8D6E63;
   border-radius: 10px;
@@ -617,12 +624,12 @@ h1.game-title {
   padding: 14px 18px;
   text-align: center;
   border-bottom: 1px solid #E0E0E0;
+  font-family: var(--font-straight);
 }
 
 .rank-table th {
   background: #4A2E2B;
   color: var(--color-gold);
-  font-family: var(--font-title);
   font-size: 1.2rem;
 }
 
@@ -658,7 +665,7 @@ h1.game-title {
 }
 
 .modal-card h3 {
-  font-family: var(--font-title);
+  font-family: var(--font-straight);
   font-size: 2rem;
   color: var(--color-brown-dark);
   margin-bottom: 14px;
