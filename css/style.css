@@ -230,61 +230,63 @@ h1.game-title {
   border-color: #7D6608;
 }
 
-/* 1. 로그인 스크린 */
+/* 1. 대형 로그인 스크린 카드 (시원하고 크게 확장) */
 .login-box {
   text-align: center;
-  max-width: 580px;
+  max-width: 740px;
   width: 100%;
   background: #FFFDF7;
-  padding: 44px 36px;
-  border-radius: 22px;
-  border: var(--border-traditional);
-  box-shadow: var(--shadow-traditional);
+  padding: 56px 48px;
+  border-radius: 28px;
+  border: 6px double #4A2E2B;
+  box-shadow: 0 16px 40px rgba(31, 25, 22, 0.22);
   position: relative;
 }
 
 .login-box h2 {
   font-family: var(--font-straight);
-  font-size: 2.6rem;
+  font-size: 3.2rem;
   color: var(--color-brown-dark);
-  margin-bottom: 16px;
+  margin-bottom: 20px;
   letter-spacing: 1px;
 }
 
 .login-box p {
   font-family: var(--font-straight);
   color: #5D4037;
-  margin-bottom: 28px;
-  font-size: 1.25rem;
+  margin-bottom: 36px;
+  font-size: 1.4rem;
   line-height: 1.6;
 }
 
 .input-group input {
   font-family: var(--font-straight);
   width: 100%;
-  padding: 16px 22px;
-  font-size: 1.3rem;
-  border: 2px solid #A1887F;
-  border-radius: 12px;
+  padding: 20px 28px;
+  font-size: 1.5rem;
+  border: 3px solid #A1887F;
+  border-radius: 16px;
   text-align: center;
   outline: none;
 }
 
 .input-group input:focus {
   border-color: var(--color-gold);
-  box-shadow: 0 0 0 4px rgba(212, 175, 55, 0.25);
+  box-shadow: 0 0 0 5px rgba(212, 175, 55, 0.3);
 }
 
 .login-buttons {
   display: flex;
   flex-direction: column;
-  gap: 16px;
-  margin-top: 22px;
+  gap: 20px;
+  margin-top: 28px;
 }
 
 .login-buttons .btn {
   font-family: var(--font-straight);
-  font-size: 1.45rem;
+  font-size: 1.65rem;
+  padding: 18px 36px;
+  border-radius: 16px;
 }
 
 /* 2. 메인 로비 레이아웃 (와이드 풀비주얼) */
