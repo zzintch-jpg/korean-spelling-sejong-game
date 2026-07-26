@@ -1,6 +1,6 @@
 // ==========================================================================
-// 훈민정음 맞춤법 수호대 - 100% 단일 자립형 무결점 애플리케이션 스크립트 (v3.4.0)
-// 파이어베이스 구글 계정 팝업 & 리다이렉트 (signInWithRedirect) 이중 보장 엔진
+// 훈민정음 맞춤법 수호대 - 100% 단일 자립형 무결점 애플리케이션 스크립트 (v3.5.0)
+// 파이어베이스 실제 구글 인증 설정 감지 및 실시간 연동 지원 엔진
 // ==========================================================================
 
 (function() {
@@ -306,7 +306,7 @@
     }
   }
 
-  // 5. 게스트 및 파이어베이스 리다이렉트/팝업 이중 보장 구글 인증
+  // 5. 파이어베이스 인증 감지 및 연동 처리
   window.startGuestLogin = function() {
     playSound('click');
     const nickInput = document.getElementById('nicknameInput');
@@ -320,10 +320,20 @@
     if (window.firebase && window.firebase.auth) {
       try {
         if (!window.firebase.apps || window.firebase.apps.length === 0) {
-          window.firebase.initializeApp({
-            authDomain: "korean-spelling-game.firebaseapp.com",
-            projectId: "korean-spelling-game"
-          });
+          const cfg = (window.FIREBASE_CONFIG) || (window.ENV ? {
+            apiKey: window.ENV.VITE_FIREBASE_API_KEY,
+            authDomain: window.ENV.VITE_FIREBASE_AUTH_DOMAIN,
+            projectId: window.ENV.VITE_FIREBASE_PROJECT_ID
+          } : null);
+
+          if (cfg && cfg.apiKey) {
+            window.firebase.initializeApp(cfg);
+          } else {
+            window.firebase.initializeApp({
+              authDomain: "korean-spelling-game.firebaseapp.com",
+              projectId: "korean-spelling-game"
+            });
+          }
         }
         return window.firebase.auth();
       } catch (e) {}
@@ -331,7 +341,6 @@
     return null;
   }
 
-  // 페이지 로드 시 구글 리다이렉트 로그인 결과 자동 감지
   window.addEventListener('load', function() {
     var auth = initFirebaseApp();
     if (auth) {
@@ -347,7 +356,6 @@
     }
   });
 
-  // 🌐 구글 계정 페이지(accounts.google.com)로 직접 이동하는 리다이렉트 로그인
   window.startGoogleLogin = function() {
     playSound('click');
     const nickInput = document.getElementById('nicknameInput');
@@ -360,7 +368,6 @@
         provider.addScope('email');
         provider.addScope('profile');
 
-        // 1. 팝업 시도 후, 팝업 차단 발생 시 즉시 구글 계정 선택 페이지로 리다이렉트 이동
         auth.signInWithPopup(provider).then(function(result) {
           var user = result.user;
           handleUserLoggedIn({
@@ -368,11 +375,11 @@
             displayName: inputNick || user.displayName || user.email || '구글도전자'
           });
         }).catch(function(error) {
-          console.warn("팝업 차단됨 - 구글 계정 선택 페이지로 직접 이동합니다:", error);
+          console.warn("구글 팝업 대기 후 리다이렉트 이동:", error);
           auth.signInWithRedirect(provider);
         });
       } catch (e) {
-        console.warn("구글 리다이렉트 예외 발생 - 안전 폴백:", e);
+        console.warn("구글 인증 리다이렉트 이동:", e);
         auth.signInWithRedirect(new window.firebase.auth.GoogleAuthProvider());
       }
     } else {
