@@ -1,27 +1,29 @@
 /* ==========================================================================
-   조선시대 전통 테마 & 훈민정음 맞춤법 미니게임 디자인 시스템
+   조선시대 전통 테마 & 훈민정음 맞춤법 미니게임 프리미엄 디자인 시스템
    ========================================================================== */
 
-@import url('https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=Noto+Serif+KR:wght@400;600;700;900&family=Do+Hyeon&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=East+Sea+Dokdo&family=Gowun+Batang:wght@400;700&family=Nanum+Myeongjo:wght@400;700;800&family=Do+Hyeon&display=swap');
 
 :root {
-  --font-title: 'Do Hyeon', 'Gowun Batang', serif;
-  --font-body: 'Noto Serif KR', 'Gowun Batang', serif;
+  --font-calligraphy: 'East Sea Dokdo', 'Gowun Batang', serif;
+  --font-title: 'Nanum Myeongjo', 'Gowun Batang', serif;
+  --font-body: 'Gowun Batang', 'Nanum Myeongjo', serif;
 
-  /* 조선 전통 칼라 팔레트 */
+  /* 전통 칼라 팔레트 */
   --color-paper: #F5EFE0;
   --color-paper-dark: #E6DCB8;
   --color-ink: #1F1916;
   --color-gold: #D4AF37;
   --color-gold-bright: #F39C12;
+  --color-gold-glow: #F1C40F;
   --color-dancheong-red: #A93226;
   --color-dancheong-green: #1E8449;
   --color-dancheong-blue: #1F618D;
   --color-brown-dark: #3E2723;
   --color-card-bg: #FFFDF7;
   
-  --shadow-traditional: 0 10px 25px rgba(31, 25, 22, 0.15);
-  --border-traditional: 3px solid #8D6E63;
+  --shadow-traditional: 0 12px 30px rgba(31, 25, 22, 0.18);
+  --border-traditional: 4px double #8D6E63;
   --border-gold: 3px solid #D4AF37;
 }
 
@@ -37,9 +39,9 @@ body {
   font-family: var(--font-body);
   background-color: var(--color-paper);
   background-image: 
-    radial-gradient(circle, rgba(212, 175, 55, 0.08) 1px, transparent 1px),
-    linear-gradient(to bottom, #FAF5E8, #ECE1C7);
-  background-size: 24px 24px, 100% 100%;
+    radial-gradient(circle, rgba(212, 175, 55, 0.12) 1px, transparent 1px),
+    linear-gradient(to bottom, #FAF5E8, #EAE0C8);
+  background-size: 28px 28px, 100% 100%;
   color: var(--color-ink);
   min-height: 100vh;
   display: flex;
@@ -53,73 +55,111 @@ body {
 /* 화면 컨테이너 */
 .app-container {
   width: 100%;
-  max-width: 900px;
-  min-height: 650px;
+  max-width: 950px;
+  min-height: 700px;
   background: var(--color-card-bg);
-  border: 8px double #5D4037;
-  border-radius: 16px;
-  box-shadow: var(--shadow-traditional), inset 0 0 40px rgba(141, 110, 99, 0.1);
+  border: 10px double #4A2E2B;
+  border-radius: 20px;
+  box-shadow: var(--shadow-traditional), inset 0 0 50px rgba(141, 110, 99, 0.12);
   position: relative;
   overflow: hidden;
   display: flex;
   flex-direction: column;
 }
 
-/* 헤더 & 지붕 문양 */
+/* 헤더 & 단청 전통 문양 */
 header {
-  background: linear-gradient(135deg, #3E2723, #1A0C08);
+  background: linear-gradient(135deg, #2D1410 0%, #4A2E2B 50%, #1A0C08 100%);
   color: var(--color-gold);
-  padding: 18px 24px;
+  padding: 24px 30px;
   text-align: center;
-  border-bottom: 4px solid var(--color-gold);
+  border-bottom: 5px solid var(--color-gold);
   position: relative;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.4);
 }
 
 header::before, header::after {
   content: '❖';
-  color: var(--color-gold);
-  font-size: 1.4rem;
-  margin: 0 10px;
+  color: var(--color-gold-bright);
+  font-size: 1.8rem;
+  margin: 0 14px;
+  vertical-align: middle;
+}
+
+.header-title-box {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
 }
 
 h1.game-title {
-  font-family: var(--font-title);
-  font-size: 2.2rem;
-  letter-spacing: 2px;
-  text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
-  display: inline-block;
+  font-family: var(--font-calligraphy);
+  font-size: 3.4rem;
+  letter-spacing: 4px;
+  color: var(--color-gold);
+  text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.8), 0 0 12px rgba(212, 175, 55, 0.4);
+  line-height: 1;
 }
 
 .subtitle {
-  font-size: 0.95rem;
-  color: #D7CCC8;
-  margin-top: 4px;
+  font-family: var(--font-body);
+  font-size: 1.05rem;
+  color: #E0D5C1;
+  margin-top: 8px;
+  letter-spacing: 1px;
 }
 
-/* 유저 바 (로그인 & 토큰 정보) */
+/* 유저 정보 바 (로그아웃 버튼 추가) */
 .user-bar {
-  background: #EFEBE9;
-  padding: 10px 20px;
+  background: linear-gradient(to right, #FAF3E0, #EDE2CD);
+  padding: 12px 24px;
   display: flex;
   justify-content: space-between;
   align-items: center;
   border-bottom: 2px solid #D7CCC8;
-  font-weight: 600;
-  font-size: 0.95rem;
+  font-weight: 700;
+  font-size: 1.05rem;
+  box-shadow: inset 0 -2px 4px rgba(0,0,0,0.04);
+}
+
+.user-info-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
 }
 
 .user-info span {
   color: var(--color-dancheong-red);
-  font-weight: 700;
+  font-size: 1.15rem;
+}
+
+.btn-logout {
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  padding: 4px 10px;
+  border: 1.5px solid #8D6E63;
+  border-radius: 6px;
+  background: #FFF;
+  color: #5D4037;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-logout:hover {
+  background: #FADBD8;
+  border-color: #C0392B;
+  color: #922B21;
 }
 
 .token-badge {
   background: linear-gradient(135deg, var(--color-gold), #B7950B);
   color: #FFF;
-  padding: 4px 12px;
+  padding: 6px 16px;
   border-radius: 20px;
-  font-size: 0.9rem;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+  font-size: 1rem;
+  box-shadow: 0 3px 6px rgba(0,0,0,0.2);
+  border: 1px solid #FFF8E7;
 }
 
 /* 화면 전환 스크린 */
@@ -138,7 +178,7 @@ h1.game-title {
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(10px); }
+  from { opacity: 0; transform: translateY(12px); }
   to { opacity: 1; transform: translateY(0); }
 }
 
@@ -146,6 +186,7 @@ h1.game-title {
 .btn {
   font-family: var(--font-title);
   font-size: 1.25rem;
+  font-weight: 700;
   padding: 12px 28px;
   border: 3px solid #5D4037;
   border-radius: 12px;
@@ -153,7 +194,7 @@ h1.game-title {
   color: var(--color-brown-dark);
   cursor: pointer;
   transition: all 0.2s ease;
-  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.12);
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -163,13 +204,9 @@ h1.game-title {
 
 .btn:hover {
   transform: translateY(-2px);
-  box-shadow: 0 6px 12px rgba(0,0,0,0.18);
+  box-shadow: 0 6px 14px rgba(0,0,0,0.2);
   border-color: var(--color-gold);
   background: linear-gradient(to bottom, #FFFDE8, #E2D3B4);
-}
-
-.btn:active {
-  transform: translateY(1px);
 }
 
 .btn-primary {
@@ -192,18 +229,19 @@ h1.game-title {
 /* 1. 로그인 스크린 */
 .login-box {
   text-align: center;
-  max-width: 450px;
+  max-width: 480px;
   width: 100%;
-  background: #FFF;
-  padding: 32px 24px;
-  border-radius: 16px;
+  background: #FFFDF7;
+  padding: 36px 28px;
+  border-radius: 18px;
   border: var(--border-traditional);
   box-shadow: var(--shadow-traditional);
+  position: relative;
 }
 
 .login-box h2 {
   font-family: var(--font-title);
-  font-size: 1.8rem;
+  font-size: 2.2rem;
   color: var(--color-brown-dark);
   margin-bottom: 12px;
 }
@@ -211,81 +249,75 @@ h1.game-title {
 .login-box p {
   color: #5D4037;
   margin-bottom: 24px;
-  font-size: 0.95rem;
-  line-height: 1.5;
-}
-
-.input-group {
-  margin-bottom: 20px;
+  font-size: 1.05rem;
+  line-height: 1.6;
 }
 
 .input-group input {
   font-family: var(--font-body);
   width: 100%;
-  padding: 12px 16px;
-  font-size: 1.1rem;
+  padding: 14px 18px;
+  font-size: 1.15rem;
   border: 2px solid #A1887F;
-  border-radius: 8px;
+  border-radius: 10px;
   text-align: center;
   outline: none;
 }
 
 .input-group input:focus {
   border-color: var(--color-gold);
-  box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.25);
+  box-shadow: 0 0 0 4px rgba(212, 175, 55, 0.25);
 }
 
 .login-buttons {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 14px;
+  margin-top: 18px;
 }
 
-/* 2. 로비 스크린 (메인 선택) */
-.lobby-grid {
+/* 2. 메인 로비 레이아웃 (수평 3종 미니게임 + 세종대왕 보스전 대형 배너) */
+.lobby-container {
   width: 100%;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
+  display: flex;
+  flex-direction: column;
   gap: 20px;
-  margin-top: 16px;
 }
 
 .token-inventory-panel {
-  grid-column: span 2;
-  background: #FDFBF7;
+  background: #FDFBF5;
   border: 2px dashed #BCAAA4;
-  border-radius: 12px;
+  border-radius: 14px;
   padding: 16px;
   text-align: center;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
 }
 
 .token-inventory-panel h3 {
   font-family: var(--font-title);
+  font-size: 1.25rem;
   color: var(--color-brown-dark);
   margin-bottom: 12px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
 }
 
 .token-grid {
   display: grid;
-  grid-template-columns: repeat(7, 1fr);
-  gap: 8px;
-  max-width: 500px;
+  grid-template-columns: repeat(14, 1fr);
+  gap: 6px;
+  max-width: 800px;
   margin: 0 auto;
 }
 
 .token-item {
-  width: 44px;
-  height: 44px;
+  width: 46px;
+  height: 46px;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   font-family: var(--font-title);
-  font-size: 1.3rem;
+  font-size: 1.35rem;
+  font-weight: 700;
   background: #E0E0E0;
   color: #9E9E9E;
   border: 2px solid #BDBDBD;
@@ -296,189 +328,198 @@ h1.game-title {
   background: radial-gradient(circle, #FFF7D6, var(--color-gold));
   color: var(--color-brown-dark);
   border: 2px solid #9A7D0A;
-  box-shadow: 0 0 10px rgba(212, 175, 55, 0.6);
-  transform: scale(1.08);
+  box-shadow: 0 0 12px rgba(212, 175, 55, 0.7);
+  transform: scale(1.1);
+}
+
+/* 3종 미니게임 수평 배치 (Horizontal 3-column row) */
+.minigame-horizontal-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 16px;
+  width: 100%;
 }
 
 .menu-card {
-  background: #FFF;
+  background: #FFFDF7;
   border: 3px solid #8D6E63;
-  border-radius: 14px;
-  padding: 20px;
+  border-radius: 16px;
+  padding: 20px 14px;
   text-align: center;
   cursor: pointer;
-  transition: all 0.25 ease;
+  transition: all 0.25s ease;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  gap: 10px;
+  justify-content: space-between;
+  min-height: 180px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.06);
 }
 
 .menu-card:hover {
-  transform: translateY(-4px);
+  transform: translateY(-5px);
   border-color: var(--color-gold);
-  box-shadow: 0 8px 16px rgba(0,0,0,0.12);
+  box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+  background: linear-gradient(to bottom, #FFFDF9, #F5EBD7);
 }
 
 .menu-icon {
-  font-size: 2.5rem;
+  font-size: 2.8rem;
+  margin-bottom: 8px;
 }
 
 .menu-card h4 {
   font-family: var(--font-title);
-  font-size: 1.3rem;
+  font-size: 1.35rem;
   color: var(--color-brown-dark);
+  margin-bottom: 6px;
 }
 
 .menu-card p {
-  font-size: 0.85rem;
-  color: #795548;
+  font-size: 0.9rem;
+  color: #6D4C41;
+  line-height: 1.4;
 }
 
-.boss-card {
-  background: linear-gradient(135deg, #FFF3E0, #FFE0B2);
-  border-color: var(--color-gold);
+/* 세종대왕 보스전 대형 단독 배너 (웅장하고 눈에 띄는 디자인) */
+.boss-banner-card {
+  width: 100%;
+  background: linear-gradient(135deg, #3A1C1A 0%, #1F0C09 100%);
+  border: 4px solid var(--color-gold);
+  border-radius: 18px;
+  padding: 20px 28px;
+  color: #FFF;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4), inset 0 0 20px rgba(212, 175, 55, 0.2);
+  position: relative;
+  overflow: hidden;
 }
 
-.boss-card.locked {
-  opacity: 0.65;
-  filter: grayscale(0.6);
+.boss-banner-card:hover {
+  transform: scale(1.02);
+  box-shadow: 0 12px 30px rgba(212, 175, 55, 0.5), inset 0 0 30px rgba(212, 175, 55, 0.4);
+  border-color: var(--color-gold-glow);
 }
 
-/* 미니게임 1: 사격/터치 게임 판 */
+.boss-banner-left {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.boss-img-thumbnail {
+  width: 85px;
+  height: 85px;
+  border-radius: 50%;
+  border: 3px solid var(--color-gold);
+  object-fit: cover;
+  box-shadow: 0 0 15px rgba(212, 175, 55, 0.5);
+}
+
+.boss-banner-info h3 {
+  font-family: var(--font-calligraphy);
+  font-size: 2.6rem;
+  color: var(--color-gold);
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
+  letter-spacing: 2px;
+}
+
+.boss-banner-info p {
+  font-size: 1rem;
+  color: #FFF8E7;
+  margin-top: 4px;
+}
+
+.boss-banner-right {
+  text-align: right;
+}
+
+.boss-status-badge {
+  display: inline-block;
+  padding: 10px 20px;
+  border-radius: 30px;
+  font-family: var(--font-title);
+  font-size: 1.2rem;
+  font-weight: 700;
+  background: linear-gradient(135deg, var(--color-gold), #B7950B);
+  color: #FFF;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+}
+
+.boss-banner-card.locked .boss-status-badge {
+  background: #555;
+  color: #BBB;
+  box-shadow: none;
+}
+
+/* 게임 1~3 스테이지 디자인 */
 .game-header {
   width: 100%;
   display: flex;
   justify-content: space-between;
   align-items: center;
   background: #EFEBE9;
-  padding: 10px 16px;
-  border-radius: 10px;
+  padding: 12px 20px;
+  border-radius: 12px;
   margin-bottom: 16px;
+  border: 2px solid #D7CCC8;
 }
 
 .timer-box {
   font-family: var(--font-title);
-  font-size: 1.4rem;
+  font-size: 1.5rem;
   color: var(--color-dancheong-red);
 }
 
 .score-box {
   font-family: var(--font-title);
-  font-size: 1.4rem;
+  font-size: 1.5rem;
   color: var(--color-dancheong-green);
 }
 
 .touch-game-stage {
   width: 100%;
-  height: 380px;
+  height: 400px;
   background: #FAF8F5;
   border: 3px solid #8D6E63;
-  border-radius: 14px;
+  border-radius: 16px;
   position: relative;
   overflow: hidden;
 }
 
 .floating-word {
   position: absolute;
-  padding: 10px 20px;
+  padding: 12px 24px;
   background: #FFF;
-  border: 2px solid #5D4037;
-  border-radius: 30px;
+  border: 3px solid #5D4037;
+  border-radius: 35px;
   font-family: var(--font-title);
-  font-size: 1.3rem;
+  font-size: 1.4rem;
+  font-weight: 700;
   cursor: pointer;
-  box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.18);
   transition: transform 0.1s ease;
 }
 
 .floating-word:active {
-  transform: scale(0.9);
+  transform: scale(0.92);
 }
 
-/* 미니게임 2: 선택형 게임 판 */
-.choice-card-box {
-  width: 100%;
-  max-width: 600px;
-  background: #FFF;
-  border: 3px solid #8D6E63;
-  border-radius: 16px;
-  padding: 30px;
-  text-align: center;
-  box-shadow: var(--shadow-traditional);
-}
-
-.question-sentence {
-  font-size: 1.5rem;
-  margin: 24px 0;
-  line-height: 1.6;
-  color: var(--color-brown-dark);
-  font-weight: 700;
-}
-
-.options-container {
-  display: flex;
-  gap: 20px;
-  justify-content: center;
-  margin-top: 20px;
-}
-
-.option-btn {
-  flex: 1;
-  padding: 18px;
-  font-family: var(--font-title);
-  font-size: 1.4rem;
-  border: 3px solid #8D6E63;
-  border-radius: 12px;
-  background: #FFFDF7;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.option-btn:hover {
-  background: #FFF8E7;
-  border-color: var(--color-gold);
-}
-
-/* 미니게임 3: 오류 탐정 판 */
-.detective-box {
-  width: 100%;
-  max-width: 600px;
-  background: #FFF;
-  border: 3px solid #8D6E63;
-  border-radius: 16px;
-  padding: 30px;
-  text-align: center;
-}
-
-.detective-sentence {
-  font-size: 1.4rem;
-  line-height: 1.8;
-  margin: 20px 0;
-}
-
-.word-span {
-  padding: 4px 8px;
-  margin: 0 2px;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: background 0.2s;
-  display: inline-block;
-}
-
-.word-span:hover {
-  background: #FFE0B2;
-}
-
-/* 세종대왕 보스전 */
+/* 세종대왕 보스전 대결 스크린 */
 .boss-battle-screen {
   background: linear-gradient(to bottom, #2C1A1D, #1A0C08);
   color: #FFF;
   width: 100%;
   height: 100%;
-  border-radius: 12px;
-  padding: 24px;
+  border-radius: 16px;
+  padding: 28px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .boss-avatar-box {
@@ -486,25 +527,25 @@ h1.game-title {
   margin-bottom: 16px;
 }
 
-.boss-avatar {
-  font-size: 4rem;
-  animation: pulse 2s infinite ease-in-out;
-}
-
-@keyframes pulse {
-  0%, 100% { transform: scale(1); }
-  50% { transform: scale(1.08); }
+.boss-avatar-img {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  border: 4px solid var(--color-gold);
+  box-shadow: 0 0 25px rgba(212, 175, 55, 0.7);
+  object-fit: cover;
 }
 
 .boss-dialogue {
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.12);
   border: 2px solid var(--color-gold);
-  border-radius: 12px;
-  padding: 16px;
-  font-size: 1.1rem;
+  border-radius: 14px;
+  padding: 16px 24px;
+  font-size: 1.15rem;
   color: #FFF8E7;
   margin-bottom: 20px;
   text-align: center;
+  max-width: 650px;
 }
 
 .boss-options {
@@ -512,17 +553,16 @@ h1.game-title {
   flex-direction: column;
   gap: 12px;
   width: 100%;
-  max-width: 550px;
-  margin: 0 auto;
+  max-width: 580px;
 }
 
 .boss-opt-btn {
   font-family: var(--font-body);
-  padding: 14px 20px;
-  font-size: 1.15rem;
+  padding: 16px 22px;
+  font-size: 1.2rem;
   border: 2px solid var(--color-gold);
-  border-radius: 10px;
-  background: rgba(0,0,0,0.5);
+  border-radius: 12px;
+  background: rgba(0,0,0,0.6);
   color: #FFF;
   cursor: pointer;
   text-align: left;
@@ -530,28 +570,29 @@ h1.game-title {
 }
 
 .boss-opt-btn:hover {
-  background: rgba(212, 175, 55, 0.3);
+  background: rgba(212, 175, 55, 0.35);
+  transform: translateX(4px);
 }
 
 /* 명예의 전당 (리더보드) */
 .hall-container {
   width: 100%;
-  max-width: 700px;
+  max-width: 750px;
 }
 
 .hall-tabs {
   display: flex;
-  gap: 12px;
-  margin-bottom: 16px;
+  gap: 14px;
+  margin-bottom: 18px;
 }
 
 .tab-btn {
   flex: 1;
-  padding: 10px;
+  padding: 12px;
   font-family: var(--font-title);
-  font-size: 1.1rem;
+  font-size: 1.2rem;
   border: 2px solid #8D6E63;
-  border-radius: 8px;
+  border-radius: 10px;
   background: #EFEBE9;
   cursor: pointer;
 }
@@ -567,37 +608,37 @@ h1.game-title {
   border-collapse: collapse;
   background: #FFF;
   border: 2px solid #8D6E63;
-  border-radius: 8px;
+  border-radius: 10px;
   overflow: hidden;
 }
 
 .rank-table th, .rank-table td {
-  padding: 12px 16px;
+  padding: 14px 18px;
   text-align: center;
   border-bottom: 1px solid #E0E0E0;
 }
 
 .rank-table th {
-  background: #5D4037;
+  background: #4A2E2B;
   color: var(--color-gold);
   font-family: var(--font-title);
-  font-size: 1.1rem;
+  font-size: 1.2rem;
 }
 
 .master-badge {
   background: #E74C3C;
   color: #FFF;
-  font-size: 0.75rem;
-  padding: 2px 6px;
-  border-radius: 4px;
-  margin-left: 6px;
+  font-size: 0.8rem;
+  padding: 3px 8px;
+  border-radius: 6px;
+  margin-left: 8px;
 }
 
-/* 피드백 팝업 알림 */
+/* 피드백 팝업 알림 모달 */
 .modal-overlay {
   position: absolute;
   top: 0; left: 0; right: 0; bottom: 0;
-  background: rgba(0,0,0,0.6);
+  background: rgba(0,0,0,0.65);
   display: none;
   align-items: center;
   justify-content: center;
@@ -606,26 +647,28 @@ h1.game-title {
 
 .modal-card {
   background: #FFFDF7;
-  border: 4px solid var(--color-gold);
-  border-radius: 16px;
-  padding: 28px;
+  border: 5px solid var(--color-gold);
+  border-radius: 20px;
+  padding: 32px 24px;
   text-align: center;
-  max-width: 420px;
-  width: 90%;
-  box-shadow: 0 12px 24px rgba(0,0,0,0.3);
+  max-width: 460px;
+  width: 92%;
+  box-shadow: 0 16px 32px rgba(0,0,0,0.4);
 }
 
 .modal-card h3 {
   font-family: var(--font-title);
-  font-size: 1.8rem;
+  font-size: 2rem;
   color: var(--color-brown-dark);
-  margin-bottom: 12px;
+  margin-bottom: 14px;
 }
 
-/* 반응형 모바일 대응 */
-@media (max-width: 600px) {
-  .lobby-grid { grid-template-columns: 1fr; }
+/* 모바일 반응형 처리 */
+@media (max-width: 768px) {
+  .minigame-horizontal-row { grid-template-columns: 1fr; }
   .token-grid { grid-template-columns: repeat(7, 1fr); }
-  .token-item { width: 36px; height: 36px; font-size: 1rem; }
-  h1.game-title { font-size: 1.6rem; }
+  .boss-banner-card { flex-direction: column; text-align: center; gap: 16px; }
+  .boss-banner-left { flex-direction: column; }
+  .boss-banner-right { text-align: center; }
+  h1.game-title { font-size: 2.2rem; }
 }

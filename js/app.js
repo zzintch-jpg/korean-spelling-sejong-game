@@ -4,7 +4,8 @@
 
 import { GAME1_WORDS, GAME2_QUESTIONS, GAME3_QUESTIONS, BOSS_QUESTIONS } from './questions.js';
 import { HANGUL_TOKENS, isBossUnlocked } from './tokens.js';
-import { loginWithGoogle, loginAnonymously, saveScoreToFirestore, getTop5Leaderboard } from './firebase-config.js';
+import { loginWithGoogle, loginAnonymously, saveScoreToFirestore, getTop5Leaderboard, auth } from './firebase-config.js';
+import { signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
 const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 
@@ -115,10 +116,10 @@ function updateUI() {
   const bossLockText = document.getElementById('bossLockText');
   if (isBossUnlocked(currentUser.collectedTokens)) {
     bossBtn.classList.remove('locked');
-    bossLockText.textContent = "🔥 세종대왕 도전 가능! (10문제 만점 성공 시 훈민정음 마스터)";
+    bossLockText.textContent = "🔥 14개 자음 토큰 수집 완료! 세종대왕 보스전 도전 가능!";
   } else {
     bossBtn.classList.add('locked');
-    bossLockText.textContent = `토큰 14개를 모두 모아야 도전 가능 (${currentUser.collectedTokens.length}/14)`;
+    bossLockText.textContent = `14개 한글 토큰을 모아 세종대왕과의 10문제 최종 결투에 도전하세요! (${currentUser.collectedTokens.length}/14)`;
   }
 }
 
@@ -134,6 +135,22 @@ function showScreen(screenId) {
 }
 
 function initUIEventListeners() {
+  // 로그아웃 / 다른 계정으로 로그인 버튼
+  document.getElementById('btnLogout').addEventListener('click', async () => {
+    if (auth) {
+      try { await signOut(auth); } catch (e) {}
+    }
+    currentUser = {
+      uid: '',
+      displayName: '',
+      collectedTokens: [],
+      totalClears: 0,
+      isMaster: false
+    };
+    document.getElementById('userBar').style.display = 'none';
+    showScreen('loginScreen');
+  });
+
   // 익명 로그인
   document.getElementById('btnAnonLogin').addEventListener('click', async () => {
     try {
@@ -171,7 +188,7 @@ function initUIEventListeners() {
 
   document.getElementById('btnBossBattle').addEventListener('click', () => {
     if (!isBossUnlocked(currentUser.collectedTokens)) {
-      showModal("보스전 잠김", "14개 한글 토큰을 모두 모아야 세종대왕에게 도전할 수 있습니다!");
+      showModal("보스전 잠김 👑", "14개 한글 자음 토큰(`가`~`하`)을 모두 모아야 세종대왕에게 도전할 수 있습니다!");
       return;
     }
     startBossBattle();

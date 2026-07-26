@@ -10,16 +10,21 @@
 <body>
 
   <div class="app-container">
-    <!-- 헤더 -->
+    <!-- 단청 & 전통 한옥 헤더 -->
     <header>
-      <h1 class="game-title">📜 훈민정음 맞춤법 수호대</h1>
-      <p class="subtitle">1분 미니게임으로 한글 토큰을 모아 세종대왕에게 도전하라!</p>
+      <div class="header-title-box">
+        <h1 class="game-title">📜 훈민정음 맞춤법 수호대</h1>
+      </div>
+      <p class="subtitle">1분 미니게임으로 한글 토큰 14개를 모아 세종대왕에게 도전하라!</p>
     </header>
 
-    <!-- 유저 정보 바 (로그인 후 표시) -->
+    <!-- 유저 정보 바 (로그아웃 / 다른 계정으로 로그인 버튼 추가) -->
     <div id="userBar" class="user-bar" style="display: none;">
-      <div class="user-info">
-        선비: <span id="userDisplayName">손님</span>
+      <div class="user-info-left">
+        <div class="user-info">
+          선비: <span id="userDisplayName">손님</span>
+        </div>
+        <button id="btnLogout" class="btn-logout">🚪 다른 계정으로 로그인</button>
       </div>
       <div class="token-status">
         <span class="token-badge">한글 토큰: <strong id="tokenCount">0</strong> / 14</span>
@@ -37,11 +42,11 @@
         </div>
 
         <div class="login-buttons">
-          <button id="btnAnonLogin" class="btn btn-primary">
-            <span>🛡️</span> 게스트(익명)로 시작하기
-          </button>
           <button id="btnGoogleLogin" class="btn btn-gold">
             <span>🌐</span> Google 계정으로 로그인
+          </button>
+          <button id="btnAnonLogin" class="btn btn-primary">
+            <span>🛡️</span> 게스트(익명)로 시작하기
           </button>
         </div>
       </div>
@@ -49,45 +54,64 @@
 
     <!-- 2. 메인 로비 스크린 -->
     <section id="lobbyScreen" class="screen">
-      <!-- 14개 자음 토큰 수집판 -->
-      <div class="token-inventory-panel">
-        <h3>✨ 훈민정음 자음 토큰 수집판 (<span id="tokenPanelCount">0</span>/14)</h3>
-        <div id="tokenGrid" class="token-grid">
-          <!-- 14개 자음 아이템이 JS로 동적 생성됨 -->
-        </div>
-      </div>
-
-      <!-- 메인 메뉴 카드 -->
-      <div class="lobby-grid">
-        <div class="menu-card" id="btnGame1">
-          <div class="menu-icon">🎯</div>
-          <h4>1. 맞춤법 터치</h4>
-          <p>올바른 낱말 빠르게 터치 (1분)</p>
+      <div class="lobby-container">
+        
+        <!-- 14개 자음 토큰 수집판 -->
+        <div class="token-inventory-panel">
+          <h3>✨ 훈민정음 자음 토큰 수집판 (<span id="tokenPanelCount">0</span>/14)</h3>
+          <div id="tokenGrid" class="token-grid">
+            <!-- 14개 자음 아이템이 JS로 동적 생성됨 -->
+          </div>
         </div>
 
-        <div class="menu-card" id="btnGame2">
-          <div class="menu-icon">✍️</div>
-          <h4>2. 문장 빈칸 채우기</h4>
-          <p>문맥에 맞는 단어 고르기 (1분)</p>
+        <!-- 3종 미니게임 수평 1행 배치 (Horizontal 3 Columns) -->
+        <div class="minigame-horizontal-row">
+          <div class="menu-card" id="btnGame1">
+            <div class="menu-icon">🎯</div>
+            <div>
+              <h4>1. 맞춤법 터치</h4>
+              <p>올바른 낱말 빠르게 터치 (1분)</p>
+            </div>
+          </div>
+
+          <div class="menu-card" id="btnGame2">
+            <div class="menu-icon">✍️</div>
+            <div>
+              <h4>2. 문장 빈칸 채우기</h4>
+              <p>문맥에 맞는 단어 고르기 (1분)</p>
+            </div>
+          </div>
+
+          <div class="menu-card" id="btnGame3">
+            <div class="menu-icon">🔍</div>
+            <div>
+              <h4>3. 맞춤법 탐정</h4>
+              <p>문장 속 틀린 글자 고치기 (1분)</p>
+            </div>
+          </div>
         </div>
 
-        <div class="menu-card" id="btnGame3">
-          <div class="menu-icon">🔍</div>
-          <h4>3. 맞춤법 탐정</h4>
-          <p>문장 속 틀린 글자 고치기 (1분)</p>
+        <!-- 👑 세종대왕 보스전 대형 단독 배너 (가고 싶게 만드는 전용 디자인) -->
+        <div class="boss-banner-card locked" id="btnBossBattle">
+          <div class="boss-banner-left">
+            <img src="assets/king_sejong.jpg" alt="세종대왕" class="boss-img-thumbnail">
+            <div class="boss-banner-info">
+              <h3>👑 세종대왕 보스전</h3>
+              <p id="bossLockText">14개 한글 토큰을 모아 세종대왕과의 10문제 최종 결투에 도전하세요!</p>
+            </div>
+          </div>
+          <div class="boss-banner-right">
+            <span class="boss-status-badge">⚡ 보스전 도전</span>
+          </div>
         </div>
 
-        <div class="menu-card boss-card locked" id="btnBossBattle">
-          <div class="menu-icon">👑</div>
-          <h4>세종대왕 보스전</h4>
-          <p id="bossLockText">토큰 14개를 모두 모아야 입장 가능!</p>
+        <!-- 명예의 전당 보기 버튼 -->
+        <div style="text-align: center; margin-top: 10px;">
+          <button id="btnHallOfFame" class="btn">
+            <span>🏛️</span> 훈민정음 명예의 전당 보기
+          </button>
         </div>
-      </div>
 
-      <div style="margin-top: 20px;">
-        <button id="btnHallOfFame" class="btn">
-          <span>🏛️</span> 훈민정음 명예의 전당 보기
-        </button>
       </div>
     </section>
 
@@ -98,7 +122,7 @@
         <div class="timer-box">⏱️ 남은시간: <span id="g1Timer">60</span>초</div>
         <div class="score-box">점수: <span id="g1Score">0</span>점</div>
       </div>
-      <p style="margin-bottom: 8px; color: #5D4037; font-weight: 600;">바른 맞춤법 단어가 떠오르면 빠르게 터치하세요!</p>
+      <p style="margin-bottom: 10px; color: #5D4037; font-weight: 700; font-size: 1.1rem;">바른 맞춤법 단어가 떠오르면 빠르게 터치하세요!</p>
       <div id="g1Stage" class="touch-game-stage">
         <!-- Floating words generated by JS -->
       </div>
@@ -112,7 +136,7 @@
         <div class="score-box">맞힌 개수: <span id="g2Score">0</span>개</div>
       </div>
       <div class="choice-card-box">
-        <h3 style="font-family: var(--font-title); color: var(--color-brown-dark);">빈칸에 알맞은 낱말은?</h3>
+        <h3 style="font-family: var(--font-title); color: var(--color-brown-dark); font-size: 1.6rem;">빈칸에 알맞은 낱말은?</h3>
         <div id="g2Sentence" class="question-sentence">문장 생성 중...</div>
         <div id="g2Options" class="options-container">
           <!-- Option buttons generated by JS -->
@@ -128,7 +152,7 @@
         <div class="score-box">해결 문장: <span id="g3Score">0</span>개</div>
       </div>
       <div class="detective-box">
-        <h3 style="font-family: var(--font-title); color: var(--color-brown-dark);">틀린 글자를 터치하여 바르게 고치세요!</h3>
+        <h3 style="font-family: var(--font-title); color: var(--color-brown-dark); font-size: 1.6rem;">틀린 글자를 터치하여 바르게 고치세요!</h3>
         <div id="g3Sentence" class="detective-sentence">문장 생성 중...</div>
         <div id="g3CorrectionArea" style="display:none; margin-top: 15px;">
           <p id="g3SelectedWordInfo"></p>
@@ -137,25 +161,25 @@
       </div>
     </section>
 
-    <!-- 6. 세종대왕 보스전 -->
+    <!-- 6. 세종대왕 보스전 대결 화면 -->
     <section id="bossScreen" class="screen">
       <div class="boss-battle-screen">
         <div class="boss-avatar-box">
-          <div class="boss-avatar">👑</div>
-          <h2 style="font-family: var(--font-title); color: var(--color-gold);">세종대왕과의 맞춤법 대결</h2>
+          <img src="assets/king_sejong.jpg" alt="세종대왕" class="boss-avatar-img">
+          <h2 style="font-family: var(--font-calligraphy); color: var(--color-gold); font-size: 2.8rem; margin-top: 8px;">세종대왕과의 맞춤법 결투</h2>
         </div>
 
         <div class="boss-dialogue">
           <p id="bossSpeech">"훈민정음 14개 토큰을 모아 나에게 도전하다니 대견하구나! 과연 10문제를 모두 맞혀 훈민정음 마스터가 될 수 있겠느냐?"</p>
         </div>
 
-        <div class="game-header" style="background: rgba(0,0,0,0.6); color:#FFF;">
+        <div class="game-header" style="background: rgba(0,0,0,0.6); color:#FFF; border-color: var(--color-gold);">
           <div>문제 <span id="bossQIndex">1</span> / 10</div>
           <div class="timer-box" style="color: #F1C40F;">⏱️ 남은시간: <span id="bossTimer">10</span>초</div>
-          <div>현재 맞힌 문제: <span id="bossScore">0</span> / 10</div>
+          <div>맞힌 문제: <span id="bossScore">0</span> / 10</div>
         </div>
 
-        <div id="bossQuestionText" style="font-size: 1.3rem; margin: 20px 0; text-align: center; color: #FFF8E7; font-weight:700;">
+        <div id="bossQuestionText" style="font-size: 1.35rem; margin: 20px 0; text-align: center; color: #FFF8E7; font-weight:700;">
           질문 로딩 중...
         </div>
 
@@ -168,7 +192,7 @@
     <!-- 7. 훈민정음 명예의 전당 스크린 -->
     <section id="hallScreen" class="screen">
       <div class="hall-container">
-        <h2 style="font-family: var(--font-title); text-align: center; margin-bottom: 16px; color: var(--color-brown-dark);">
+        <h2 style="font-family: var(--font-calligraphy); text-align: center; margin-bottom: 16px; color: var(--color-brown-dark); font-size: 2.8rem;">
           🏛️ 훈민정음 명예의 전당
         </h2>
 
@@ -201,14 +225,13 @@
     <div id="modalOverlay" class="modal-overlay">
       <div class="modal-card">
         <h3 id="modalTitle">축하합니다!</h3>
-        <p id="modalMessage" style="margin: 16px 0; font-size: 1.1rem; line-height: 1.5; color: #3E2723;"></p>
+        <p id="modalMessage" style="margin: 16px 0; font-size: 1.15rem; line-height: 1.6; color: #3E2723;"></p>
         <button id="modalBtnClose" class="btn btn-primary">확인</button>
       </div>
     </div>
 
   </div>
 
-  <!-- 메인 스크립트 모듈 -->
   <script type="module" src="js/app.js"></script>
 </body>
 </html>
