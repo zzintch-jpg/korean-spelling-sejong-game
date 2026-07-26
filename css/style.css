@@ -5,8 +5,8 @@
 @import url('https://fonts.googleapis.com/css2?family=East+Sea+Dokdo&family=Gowun+Batang:wght@400;700&family=Nanum+Myeongjo:wght@400;700;800&family=Do+Hyeon&family=Noto+Sans+KR:wght@500;700&display=swap');
 
 :root {
-  --font-calligraphy: 'East Sea Dokdo', 'Gowun Batang', serif;
-  --font-title: 'Nanum Myeongjo', 'Gowun Batang', serif;
+  --font-calligraphy: 'Do Hyeon', 'Gowun Batang', serif;
+  --font-title: 'Do Hyeon', 'Nanum Myeongjo', serif;
   --font-body: 'Gowun Batang', 'Nanum Myeongjo', serif;
   --font-straight: 'Do Hyeon', 'Noto Sans KR', sans-serif;
 
@@ -37,7 +37,7 @@
 }
 
 body {
-  font-family: var(--font-body);
+  font-family: var(--font-straight);
   background-color: var(--color-paper);
   background-image: 
     radial-gradient(circle, rgba(212, 175, 55, 0.12) 1px, transparent 1px),
@@ -68,7 +68,7 @@ body {
   flex-direction: column;
 }
 
-/* 헤더 & 단청 전통 문양 */
+/* 헤더 (메인 타이틀 반듯한 서체 적용) */
 header {
   background: linear-gradient(135deg, #2D1410 0%, #4A2E2B 50%, #1A0C08 100%);
   color: var(--color-gold);
@@ -95,9 +95,9 @@ header {
 }
 
 h1.game-title {
-  font-family: var(--font-calligraphy);
-  font-size: 3.4rem;
-  letter-spacing: 4px;
+  font-family: var(--font-straight);
+  font-size: 3.1rem;
+  letter-spacing: 2px;
   color: var(--color-gold);
   text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.8), 0 0 12px rgba(212, 175, 55, 0.4);
   line-height: 1;
@@ -105,11 +105,11 @@ h1.game-title {
 }
 
 .subtitle {
-  font-family: var(--font-body);
-  font-size: 1.05rem;
+  font-family: var(--font-straight);
+  font-size: 1.1rem;
   color: #E0D5C1;
   margin-top: 10px;
-  letter-spacing: 1px;
+  letter-spacing: 0.5px;
 }
 
 /* 유저 정보 바 */
@@ -390,7 +390,7 @@ h1.game-title {
   line-height: 1.4;
 }
 
-/* 세종대왕 보스전 대형 단독 배너 */
+/* 세종대왕 보스전 대형 배너 (반듯한 서체 적용) */
 .boss-banner-card {
   width: 100%;
   background: linear-gradient(135deg, #3A1C1A 0%, #1F0C09 100%);
@@ -430,11 +430,11 @@ h1.game-title {
 }
 
 .boss-banner-info h3 {
-  font-family: var(--font-calligraphy);
-  font-size: 2.6rem;
+  font-family: var(--font-straight);
+  font-size: 2.3rem;
   color: var(--color-gold);
   text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
-  letter-spacing: 2px;
+  letter-spacing: 1px;
 }
 
 .boss-banner-info p {
@@ -465,7 +465,7 @@ h1.game-title {
   box-shadow: none;
 }
 
-/* 게임 헤더 & 정답/오답 실시간 현황 배지 */
+/* 게임 헤더 & 정답/오답 배지 */
 .game-header {
   width: 100%;
   display: flex;
@@ -629,7 +629,7 @@ h1.game-title {
   background: #FFE0B2;
 }
 
-/* 세종대왕 보스전 대결 스크린 */
+/* 세종대왕 보스전 화면 (반듯한 서체 적용) */
 .boss-battle-screen {
   background: linear-gradient(to bottom, #2C1A1D, #1A0C08);
   color: #FFF;
@@ -645,6 +645,14 @@ h1.game-title {
 .boss-avatar-box {
   text-align: center;
   margin-bottom: 16px;
+}
+
+.boss-avatar-box h2 {
+  font-family: var(--font-straight);
+  color: var(--color-gold);
+  font-size: 2.5rem;
+  margin-top: 8px;
+  letter-spacing: 1px;
 }
 
 .boss-avatar-img {
@@ -708,6 +716,14 @@ h1.game-title {
 .hall-container {
   width: 100%;
   max-width: 750px;
+}
+
+.hall-container h2 {
+  font-family: var(--font-straight);
+  text-align: center;
+  margin-bottom: 16px;
+  color: var(--color-brown-dark);
+  font-size: 2.5rem;
 }
 
 .hall-tabs {
