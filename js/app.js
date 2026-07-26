@@ -1,5 +1,5 @@
 // ==========================================================================
-// 훈민정음 맞춤법 수호대 - 메인 어플리케이션 엔진 (한글 전용 매칭 & 80% 바른 낱말 출현 밸런싱)
+// 훈민정음 맞춤법 수호대 - 메인 어플리케이션 엔진 (도전자 호칭 적용)
 // ==========================================================================
 
 import { GAME1_WORDS, GAME2_QUESTIONS, GAME3_QUESTIONS, BOSS_QUESTIONS, getRandomSubarray } from './questions.js';
@@ -83,7 +83,7 @@ function loadUserIsolatedProfile(uid) {
 function handleUserLoggedIn(user) {
   const inputNick = document.getElementById('nicknameInput').value.trim();
   currentUser.uid = user.uid;
-  currentUser.displayName = inputNick || user.displayName || '한글선비';
+  currentUser.displayName = inputNick || user.displayName || '한글도전자';
 
   loadUserIsolatedProfile(user.uid);
   if (inputNick) {
@@ -96,7 +96,7 @@ function handleUserLoggedIn(user) {
 }
 
 function updateUI() {
-  document.getElementById('userDisplayName').textContent = currentUser.displayName || '손님';
+  document.getElementById('userDisplayName').textContent = currentUser.displayName || '도전자';
   document.getElementById('tokenCount').textContent = currentUser.collectedTokens.length;
   document.getElementById('tokenPanelCount').textContent = currentUser.collectedTokens.length;
 
@@ -152,7 +152,7 @@ function initUIEventListeners() {
 
   document.getElementById('btnAnonLogin').addEventListener('click', async () => {
     try {
-      const nick = document.getElementById('nicknameInput').value.trim() || '한글선비';
+      const nick = document.getElementById('nicknameInput').value.trim() || '한글도전자';
       const user = await loginAnonymously();
       if (user) {
         user.displayName = nick;
@@ -210,7 +210,7 @@ function initUIEventListeners() {
 }
 
 // ==========================================================================
-// 🎯 미니게임 1: 맞춤법 터치 (80% 높은 확률로 바른 낱말 출현 밸런싱)
+// 🎯 미니게임 1: 맞춤법 터치
 // ==========================================================================
 let g1Score = 0;
 let g1Wrong = 0;
@@ -239,7 +239,6 @@ function startGame1() {
     }
   }, 1000);
 
-  // 650ms 간격으로 풍성하게 단어 생성 (80% 확률로 바른 낱말 출현!)
   spawnFloatingWord();
   g1SpawnInterval = setInterval(spawnFloatingWord, 650);
 }
@@ -252,7 +251,6 @@ function spawnFloatingWord() {
   const stage = document.getElementById('g1Stage');
   const wordObj = g1ActiveWordsPool[Math.floor(Math.random() * g1ActiveWordsPool.length)];
   
-  // 80% 높은 확률로 바른 낱말이 많이 나오도록 조정하여 10개 쉽게 터치 가능!
   const isCorrectType = Math.random() < 0.80;
   const textToShow = isCorrectType ? wordObj.correct : wordObj.wrong;
 
@@ -294,7 +292,6 @@ function spawnFloatingWord() {
     setTimeout(() => el.remove(), 120);
   });
 
-  // 2.8초 동안 화면에 머물러 아이들이 여유롭게 터치할 수 있도록 조치
   setTimeout(() => { if (el.parentNode) el.remove(); }, 2800);
 }
 
@@ -383,7 +380,7 @@ function endGame2(isSuccess) {
 }
 
 // ==========================================================================
-// 🔍 미니게임 3: 맞춤법 탐정 (순수 한글 전용 추출 매칭)
+// 🔍 미니게임 3: 맞춤법 탐정
 // ==========================================================================
 let g3Score = 0;
 let g3Wrong = 0;
@@ -607,7 +604,7 @@ async function renderHallOfFame(type) {
 
     tr.innerHTML = `
       <td><strong>${idx + 1}위</strong></td>
-      <td>${user.displayName || '익명 선비'} ${masterBadgeHtml}</td>
+      <td>${user.displayName || '익명 도전자'} ${masterBadgeHtml}</td>
       <td>${metricVal}</td>
       <td>${idx === 0 ? '🥇 으뜸' : (idx === 1 ? '🥈 버금' : '🥉 으뜸이')}</td>
     `;

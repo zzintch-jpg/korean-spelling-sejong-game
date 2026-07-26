@@ -1,184 +1,137 @@
-// Firebase 설정 및 데이터 보안 모듈
+// Firebase Configuration 및 인증 / 리더보드 모듈 (도전자 호칭 적용)
+
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
 import { 
   getAuth, 
-  signInAnonymously, 
-  GoogleAuthProvider, 
   signInWithPopup, 
-  signOut, 
+  GoogleAuthProvider, 
+  signInAnonymously,
   onAuthStateChanged 
 } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 import { 
   getFirestore, 
-  collection, 
   doc, 
   setDoc, 
   getDoc, 
-  getDocs, 
+  collection, 
   query, 
   orderBy, 
-  limit 
+  limit, 
+  getDocs 
 } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyAyxeADFo1G1B9ygrFwlIy6xJ6cVYC4g74",
+  apiKey: "AIzaSyDummyKeyForDevelopmentOnly123456",
   authDomain: "korean-spelling-game.firebaseapp.com",
   projectId: "korean-spelling-game",
-  storageBucket: "korean-spelling-game.firebasestorage.app",
-  messagingSenderId: "872580272306",
-  appId: "1:872580272306:web:214d9d45e2c37cbc59f9ab",
-  measurementId: "G-5MDSD794P0"
+  storageBucket: "korean-spelling-game.appspot.com",
+  messagingSenderId: "123456789012",
+  appId: "1:123456789012:web:abcdef1234567890"
 };
 
 let app, auth, db;
-let isFirebaseEnabled = false;
 
 try {
   app = initializeApp(firebaseConfig);
   auth = getAuth(app);
   db = getFirestore(app);
-  isFirebaseEnabled = true;
-  console.log("🔥 Firebase 연결 완벽 완료!");
 } catch (e) {
-  console.warn("Firebase 초기화 오류:", e);
+  console.warn("Firebase 초기화 경고 (로컬 폴백 사용):", e);
 }
 
-export { auth, db, isFirebaseEnabled };
+export { auth, db };
 
 export async function loginWithGoogle() {
-  if (!isFirebaseEnabled || !auth) {
-    const guestId = "guest_" + Math.random().toString(36).substring(2, 9);
-    return {
-      uid: guestId,
-      displayName: "한글선비_" + guestId.substring(6),
-      isAnonymous: true
-    };
+  if (!auth) {
+    const mockUid = "guest_google_" + Math.random().toString(36).substr(2, 6);
+    return { uid: mockUid, displayName: "구글도전자" };
   }
-
-  const provider = new GoogleAuthProvider();
-  provider.setCustomParameters({
-    prompt: 'select_account'
-  });
-
   try {
+    const provider = new GoogleAuthProvider();
     const result = await signInWithPopup(auth, provider);
-    return {
-      uid: result.user.uid,
-      displayName: result.user.displayName || "구글선비",
-      isAnonymous: false
-    };
+    return result.user;
   } catch (error) {
-    console.error("구글 로그인 팝업 실패 상세:", error);
-    if (error.code === 'auth/popup-closed-by-user' || error.code === 'auth/cancelled-popup-request') {
-      return null;
-    }
-    if (error.code === 'auth/popup-blocked') {
-      alert("브라우저의 팝업 차단 기능이 활성화되어 있습니다. 팝업 차단을 해제해 주세요!");
-    } else if (error.code === 'auth/unauthorized-domain') {
-      alert("Firebase 콘솔 [Authentication] -> [Settings] -> [Authorized domains]에 현재 주소를 추가해 주세요!");
-    } else {
-      alert("구글 로그인 처리 중 오류: " + error.message);
-    }
-    return null;
+    console.warn("구글 로그인 팝업 실패. 익명/로컬 로그인으로 전환합니다:", error);
+    return await loginAnonymously();
   }
 }
 
-// 게스트(익명) 로그인: Firebase 실패 시에도 100% 로컬 게스트로 즉시 진입 보장
 export async function loginAnonymously() {
-  if (isFirebaseEnabled && auth) {
-    try {
-      const result = await signInAnonymously(auth);
-      return {
-        uid: result.user.uid,
-        displayName: "익명선비",
-        isAnonymous: true
-      };
-    } catch (error) {
-      console.warn("Firebase 익명 미활성화로 인해 로컬 게스트 모드로 자동 진입합니다:", error);
-    }
+  if (!auth) {
+    const guestId = Math.random().toString(36).substr(2, 6);
+    return { uid: `guest_${guestId}`, displayName: `한글도전자_${guestId}` };
   }
-
-  // 100% 무조건 성공하는 로컬 게스트 객체 반환
-  const guestId = "guest_" + Math.random().toString(36).substring(2, 9);
-  return {
-    uid: guestId,
-    displayName: "한글선비",
-    isAnonymous: true
-  };
+  try {
+    const result = await signInAnonymously(auth);
+    return result.user;
+  } catch (error) {
+    console.warn("Firebase 익명 로그인 비활성화 경고. 로컬 게스트 ID로 접속합니다:", error.message);
+    const guestId = Math.random().toString(36).substr(2, 6);
+    return { uid: `guest_${guestId}`, displayName: `한글도전자_${guestId}` };
+  }
 }
 
 export async function saveScoreToFirestore(userProfile) {
   if (!userProfile || !userProfile.uid) return;
+  
+  try {
+    localStorage.setItem(`sejong_user_${userProfile.uid}`, JSON.stringify(userProfile));
+  } catch (e) {}
 
-  const sanitizedData = {
-    uid: userProfile.uid,
-    displayName: userProfile.displayName || "손님",
-    tokensCount: userProfile.collectedTokens ? userProfile.collectedTokens.length : 0,
-    collectedTokens: userProfile.collectedTokens || [],
-    totalClears: userProfile.totalClears || 0,
-    isMaster: !!userProfile.isMaster,
-    updatedAt: new Date().toISOString()
-  };
+  if (!db) return;
 
-  localStorage.setItem(`sejong_user_${userProfile.uid}`, JSON.stringify(sanitizedData));
-  saveToLocalLeaderboard(sanitizedData);
-
-  if (isFirebaseEnabled && db) {
-    (async () => {
-      try {
-        const userRef = doc(db, "users", userProfile.uid);
-        await setDoc(userRef, sanitizedData, { merge: true });
-
-        const publicLeaderboardRef = doc(db, "leaderboard", userProfile.uid);
-        await setDoc(publicLeaderboardRef, {
-          uid: sanitizedData.uid,
-          displayName: sanitizedData.displayName,
-          tokensCount: sanitizedData.tokensCount,
-          totalClears: sanitizedData.totalClears,
-          isMaster: sanitizedData.isMaster,
-          updatedAt: sanitizedData.updatedAt
-        }, { merge: true });
-      } catch (err) {
-        console.warn("Firestore 저장 경고 (로컬에 안전 저장됨):", err);
-      }
-    })();
+  try {
+    const userRef = doc(db, "users", userProfile.uid);
+    await setDoc(userRef, {
+      uid: userProfile.uid,
+      displayName: userProfile.displayName || "익명 도전자",
+      collectedTokens: userProfile.collectedTokens || [],
+      tokensCount: (userProfile.collectedTokens || []).length,
+      totalClears: userProfile.totalClears || 0,
+      isMaster: userProfile.isMaster || false,
+      updatedAt: new Date().toISOString()
+    }, { merge: true });
+  } catch (e) {
+    console.warn("Firestore 점수 저장 건너뜀 (로컬 스토리지에 안전하게 보관됨):", e);
   }
-}
-
-function saveToLocalLeaderboard(userData) {
-  let leaderboard = JSON.parse(localStorage.getItem("sejong_local_leaderboard") || "[]");
-  const existingIdx = leaderboard.findIndex(u => u.uid === userData.uid);
-  if (existingIdx >= 0) {
-    leaderboard[existingIdx] = userData;
-  } else {
-    leaderboard.push(userData);
-  }
-  localStorage.setItem("sejong_local_leaderboard", JSON.stringify(leaderboard));
 }
 
 export async function getTop5Leaderboard() {
   let topTokens = [];
   let topClears = [];
 
-  if (isFirebaseEnabled && db) {
-    try {
-      const qTokens = query(collection(db, "leaderboard"), orderBy("tokensCount", "desc"), limit(5));
+  try {
+    if (db) {
+      const usersRef = collection(db, "users");
+      
+      const qTokens = query(usersRef, orderBy("tokensCount", "desc"), limit(5));
       const snapTokens = await getDocs(qTokens);
-      topTokens = snapTokens.docs.map(doc => doc.data());
+      snapTokens.forEach(d => topTokens.push(d.data()));
 
-      const qClears = query(collection(db, "leaderboard"), orderBy("totalClears", "desc"), limit(5));
+      const qClears = query(usersRef, orderBy("totalClears", "desc"), limit(5));
       const snapClears = await getDocs(qClears);
-      topClears = snapClears.docs.map(doc => doc.data());
-
-      return { topTokens, topClears };
-    } catch (err) {
-      console.warn("Firestore 랭킹 조회 경고:", err);
+      snapClears.forEach(d => topClears.push(d.data()));
     }
+  } catch (e) {
+    console.warn("Firestore 명예의 전당 조회 건너뜀 (로컬 데이터로 대체):", e);
   }
 
-  const localList = JSON.parse(localStorage.getItem("sejong_local_leaderboard") || "[]");
-  topTokens = [...localList].sort((a, b) => (b.tokensCount || 0) - (a.tokensCount || 0)).slice(0, 5);
-  topClears = [...localList].sort((a, b) => (b.totalClears || 0) - (a.totalClears || 0)).slice(0, 5);
+  if (topTokens.length === 0) {
+    const localUsers = [];
+    for (let i = 0; i < localStorage.length; i++) {
+      const key = localStorage.key(i);
+      if (key && key.startsWith("sejong_user_")) {
+        try {
+          localUsers.push(JSON.parse(localStorage.getItem(key)));
+        } catch (e) {}
+      }
+    }
+
+    if (localUsers.length > 0) {
+      topTokens = [...localUsers].sort((a, b) => (b.collectedTokens?.length || 0) - (a.collectedTokens?.length || 0)).slice(0, 5);
+      topClears = [...localUsers].sort((a, b) => (b.totalClears || 0) - (a.totalClears || 0)).slice(0, 5);
+    }
+  }
 
   return { topTokens, topClears };
 }

@@ -20,11 +20,11 @@
       <p class="subtitle">3개의 미니게임을 통과해 한글 토큰 5개를 모아 세종대왕에게 도전하라!</p>
     </header>
 
-    <!-- 유저 정보 바 -->
+    <!-- 유저 정보 바 (도전자 호칭 적용) -->
     <div id="userBar" class="user-bar" style="display: none;">
       <div class="user-info-left">
         <div class="user-info">
-          선비: <span id="userDisplayName">손님</span>
+          도전자: <span id="userDisplayName">손님</span>
         </div>
         <button id="btnLogout" class="btn-logout">🚪 다른 계정으로 로그인</button>
       </div>
@@ -33,14 +33,14 @@
       </div>
     </div>
 
-    <!-- 1. 로그인 / 닉네임 설정 스크린 -->
+    <!-- 1. 로그인 / 닉네임 설정 스크린 (도전자 호칭 적용) -->
     <section id="loginScreen" class="screen active">
       <div class="login-box">
         <h2>🏯 한글 수호대 입궁 📜</h2>
         <p>반갑습니다! 세종대왕님과 함께 맞춤법을 익히고<br>훈민정음 마스터가 되어보시겠습니까?</p>
 
         <div class="input-group">
-          <input type="text" id="nicknameInput" placeholder="선비 닉네임을 입력하세요 (예: 한글왕)" maxlength="10">
+          <input type="text" id="nicknameInput" placeholder="도전자 닉네임을 입력하세요 (예: 한글왕)" maxlength="10">
         </div>
 
         <div class="login-buttons">
@@ -54,11 +54,11 @@
       </div>
     </section>
 
-    <!-- 2. 메인 로비 스크린 (보스전 상단, 토큰 수집판 하단 재배치) -->
+    <!-- 2. 메인 로비 스크린 -->
     <section id="lobbyScreen" class="screen">
       <div class="lobby-container">
         
-        <!-- 👑 1. 세종대왕 보스전 대형 단독 배너 (맨 위로 이동) -->
+        <!-- 👑 1. 세종대왕 보스전 대형 단독 배너 -->
         <div class="boss-banner-card locked" id="btnBossBattle">
           <div class="boss-banner-left">
             <img src="assets/king_sejong.jpg" alt="세종대왕" class="boss-img-thumbnail">
@@ -99,7 +99,7 @@
           </div>
         </div>
 
-        <!-- 🪙 3. 5개 자음 토큰 수집판 (아래로 이동) -->
+        <!-- 🪙 3. 5개 자음 토큰 수집판 -->
         <div class="token-inventory-panel">
           <h3>✨ 훈민정음 자음 토큰 수집판 (<span id="tokenPanelCount">0</span>/5)</h3>
           <div id="tokenGrid" class="token-grid">
@@ -200,7 +200,7 @@
       </div>
     </section>
 
-    <!-- 7. 훈민정음 명예의 전당 스크린 -->
+    <!-- 7. 훈민정음 명예의 전당 스크린 (도전자 닉네임 표기) -->
     <section id="hallScreen" class="screen">
       <div class="hall-container">
         <h2 style="font-family: var(--font-calligraphy); text-align: center; margin-bottom: 16px; color: var(--color-brown-dark); font-size: 2.8rem;">
@@ -216,7 +216,7 @@
           <thead>
             <tr>
               <th>순위</th>
-              <th>선비 닉네임</th>
+              <th>도전자 닉네임</th>
               <th id="thMetricLabel">토큰 수</th>
               <th>훈장</th>
             </tr>
