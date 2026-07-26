@@ -4,7 +4,7 @@
 
 import { GAME1_WORDS, GAME2_QUESTIONS, GAME3_QUESTIONS, BOSS_QUESTIONS } from './questions.js';
 import { HANGUL_TOKENS, isBossUnlocked } from './tokens.js';
-import { loginWithGoogle, loginAnonymously, saveScoreToFirestore, getTop5Leaderboard, setupAuthListener } from './firebase-config.js';
+import { loginWithGoogle, loginAnonymously, saveScoreToFirestore, getTop5Leaderboard } from './firebase-config.js';
 
 const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 
@@ -65,13 +65,6 @@ let currentScreen = 'loginScreen';
 
 document.addEventListener('DOMContentLoaded', () => {
   initUIEventListeners();
-
-  // 자동 인증 감지 (구글 로그인 완료 시 즉시 로비로 이동)
-  setupAuthListener((user) => {
-    if (user && user.uid) {
-      handleUserLoggedIn(user);
-    }
-  });
 });
 
 function loadUserIsolatedProfile(uid) {
@@ -146,28 +139,25 @@ function initUIEventListeners() {
     try {
       const nick = document.getElementById('nicknameInput').value.trim() || '한글선비';
       const user = await loginAnonymously();
-      user.displayName = nick;
-      handleUserLoggedIn(user);
+      if (user) {
+        user.displayName = nick;
+        handleUserLoggedIn(user);
+      }
     } catch (e) {
       alert("로그인 안내: " + e.message);
     }
   });
 
-  // 구글 로그인
+  // 구글 계정 선택 로그인 버튼
   const btnGoogle = document.getElementById('btnGoogleLogin');
   btnGoogle.addEventListener('click', async () => {
-    btnGoogle.disabled = true;
-    btnGoogle.style.opacity = '0.6';
     try {
       const user = await loginWithGoogle();
       if (user) {
         handleUserLoggedIn(user);
       }
     } catch (e) {
-      alert("⚠️ 구글 로그인 안내:\n\n" + e.message);
-    } finally {
-      btnGoogle.disabled = false;
-      btnGoogle.style.opacity = '1';
+      console.error("구글 로그인 실패:", e);
     }
   });
 
