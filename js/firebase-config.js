@@ -20,7 +20,6 @@ import {
   limit 
 } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-// 실제 발급받으신 Firebase 연동 키 적용
 const firebaseConfig = {
   apiKey: "AIzaSyAyxeADFo1G1B9ygrFwlIy6xJ6cVYC4g74",
   authDomain: "korean-spelling-game.firebaseapp.com",
@@ -39,16 +38,30 @@ try {
   auth = getAuth(app);
   db = getFirestore(app);
   isFirebaseEnabled = true;
-  console.log("🔥 Firebase가 완벽하게 연결되었습니다!");
+  console.log("🔥 Firebase 연결 완료!");
 } catch (e) {
   console.warn("Firebase 초기화 오류:", e);
 }
 
 export { auth, db, isFirebaseEnabled };
 
+// 로그인 상태 감지 리스너 등록
+export function setupAuthListener(callback) {
+  if (isFirebaseEnabled && auth) {
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        callback({
+          uid: user.uid,
+          displayName: user.displayName || "구글선비",
+          isAnonymous: user.isAnonymous
+        });
+      }
+    });
+  }
+}
+
 let isLoggingIn = false;
 
-// 구글 로그인 처리 및 예외 핸들링
 export async function loginWithGoogle() {
   if (isLoggingIn) return null;
   isLoggingIn = true;
@@ -76,25 +89,22 @@ export async function loginWithGoogle() {
     isLoggingIn = false;
     console.error("구글 로그인 에러:", error);
 
-    // 중복 팝업 취소 에러는 사용자에게 불필요한 경고창을 띄우지 않고 무시합니다.
     if (error.code === 'auth/cancelled-popup-request') {
-      console.log("이전 로그인 팝업이 취소되었습니다.");
       return null;
     }
     
     let errorMsg = error.message;
     if (error.code === 'auth/unauthorized-domain') {
-      errorMsg = "Firebase 콘솔의 [Authentication] -> [설정] -> [승인된 도메인]에 현재 도메인(korean-spelling-sejong-game.vercel.app)을 추가해 주세요!";
+      errorMsg = "Firebase 콘솔 [Authentication] -> [Settings] -> [Authorized domains]에 korean-spelling-sejong-game.vercel.app 추가가 필요합니다!";
     } else if (error.code === 'auth/operation-not-allowed') {
-      errorMsg = "Firebase 콘솔의 [Authentication] -> [로그인 방법]에서 'Google' 로그인을 활성화(사용 설정)해 주세요!";
+      errorMsg = "Firebase 콘솔 [Authentication] -> [Sign-in method]에서 Google 로그인을 활성화해 주세요!";
     } else if (error.code === 'auth/popup-closed-by-user') {
-      errorMsg = "로그인 팝업 창이 닫혔습니다. 다시 클릭해 시도해 주세요.";
+      errorMsg = "로그인 팝업 창이 닫혔습니다.";
     }
     throw new Error(errorMsg);
   }
 }
 
-// 익명 로그인 처리
 export async function loginAnonymously() {
   if (!isFirebaseEnabled || !auth) {
     const guestId = "anon_" + Math.random().toString(36).substring(2, 9);
@@ -112,7 +122,7 @@ export async function loginAnonymously() {
       isAnonymous: true
     };
   } catch (error) {
-    console.error("익명 로그인 실패 원인:", error);
+    console.error("익명 로그인 실패:", error);
     if (error.code === 'auth/operation-not-allowed') {
       throw new Error("Firebase 콘솔에서 '익명 로그인' 활성화가 필요합니다.");
     }
@@ -120,6 +130,7 @@ export async function loginAnonymously() {
   }
 }
 
+// 점수 및 프로필 저장 (비동기 non-blocking 처리)
 export async function saveScoreToFirestore(userProfile) {
   if (!userProfile || !userProfile.uid) return;
 
@@ -133,26 +144,30 @@ export async function saveScoreToFirestore(userProfile) {
     updatedAt: new Date().toISOString()
   };
 
+  // 로컬 저장은 비동기로 즉시 완료
   localStorage.setItem(`sejong_user_${userProfile.uid}`, JSON.stringify(sanitizedData));
   saveToLocalLeaderboard(sanitizedData);
 
+  // Firestore 저장은 백그라운드에서 비동기로 수행 (화면 전환을 막지 않음)
   if (isFirebaseEnabled && db) {
-    try {
-      const userRef = doc(db, "users", userProfile.uid);
-      await setDoc(userRef, sanitizedData, { merge: true });
+    (async () => {
+      try {
+        const userRef = doc(db, "users", userProfile.uid);
+        await setDoc(userRef, sanitizedData, { merge: true });
 
-      const publicLeaderboardRef = doc(db, "leaderboard", userProfile.uid);
-      await setDoc(publicLeaderboardRef, {
-        uid: sanitizedData.uid,
-        displayName: sanitizedData.displayName,
-        tokensCount: sanitizedData.tokensCount,
-        totalClears: sanitizedData.totalClears,
-        isMaster: sanitizedData.isMaster,
-        updatedAt: sanitizedData.updatedAt
-      }, { merge: true });
-    } catch (err) {
-      console.error("Firestore 저장 오류:", err);
-    }
+        const publicLeaderboardRef = doc(db, "leaderboard", userProfile.uid);
+        await setDoc(publicLeaderboardRef, {
+          uid: sanitizedData.uid,
+          displayName: sanitizedData.displayName,
+          tokensCount: sanitizedData.tokensCount,
+          totalClears: sanitizedData.totalClears,
+          isMaster: sanitizedData.isMaster,
+          updatedAt: sanitizedData.updatedAt
+        }, { merge: true });
+      } catch (err) {
+        console.warn("Firestore 백그라운드 저장 경고 (로컬스토리지에는 안전하게 저장됨):", err);
+      }
+    })();
   }
 }
 
@@ -183,7 +198,7 @@ export async function getTop5Leaderboard() {
 
       return { topTokens, topClears };
     } catch (err) {
-      console.error("Firestore 랭킹 로딩 실패:", err);
+      console.warn("Firestore 랭킹 조회 경고, 로컬 랭킹 사용:", err);
     }
   }
 

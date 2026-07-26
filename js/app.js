@@ -4,7 +4,7 @@
 
 import { GAME1_WORDS, GAME2_QUESTIONS, GAME3_QUESTIONS, BOSS_QUESTIONS } from './questions.js';
 import { HANGUL_TOKENS, isBossUnlocked } from './tokens.js';
-import { loginWithGoogle, loginAnonymously, saveScoreToFirestore, getTop5Leaderboard } from './firebase-config.js';
+import { loginWithGoogle, loginAnonymously, saveScoreToFirestore, getTop5Leaderboard, setupAuthListener } from './firebase-config.js';
 
 const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 
@@ -65,6 +65,13 @@ let currentScreen = 'loginScreen';
 
 document.addEventListener('DOMContentLoaded', () => {
   initUIEventListeners();
+
+  // 자동 인증 감지 (구글 로그인 완료 시 즉시 로비로 이동)
+  setupAuthListener((user) => {
+    if (user && user.uid) {
+      handleUserLoggedIn(user);
+    }
+  });
 });
 
 function loadUserIsolatedProfile(uid) {
@@ -77,6 +84,21 @@ function loadUserIsolatedProfile(uid) {
       console.warn("격리 프로필 파싱 오류:", e);
     }
   }
+}
+
+function handleUserLoggedIn(user) {
+  const inputNick = document.getElementById('nicknameInput').value.trim();
+  currentUser.uid = user.uid;
+  currentUser.displayName = inputNick || user.displayName || '한글선비';
+
+  loadUserIsolatedProfile(user.uid);
+  if (inputNick) {
+    currentUser.displayName = inputNick;
+  }
+
+  saveScoreToFirestore(currentUser);
+  document.getElementById('userBar').style.display = 'flex';
+  showScreen('lobbyScreen');
 }
 
 function updateUI() {
@@ -124,45 +146,25 @@ function initUIEventListeners() {
     try {
       const nick = document.getElementById('nicknameInput').value.trim() || '한글선비';
       const user = await loginAnonymously();
-      currentUser.uid = user.uid;
-      currentUser.displayName = nick;
-      
-      loadUserIsolatedProfile(user.uid);
-      currentUser.displayName = nick;
-      
-      await saveScoreToFirestore(currentUser);
-      document.getElementById('userBar').style.display = 'flex';
-      showScreen('lobbyScreen');
+      user.displayName = nick;
+      handleUserLoggedIn(user);
     } catch (e) {
       alert("로그인 안내: " + e.message);
     }
   });
 
-  // 구글 로그인 (중복 클릭 방지 처리)
+  // 구글 로그인
   const btnGoogle = document.getElementById('btnGoogleLogin');
   btnGoogle.addEventListener('click', async () => {
     btnGoogle.disabled = true;
     btnGoogle.style.opacity = '0.6';
     try {
       const user = await loginWithGoogle();
-      if (!user) {
-        btnGoogle.disabled = false;
-        btnGoogle.style.opacity = '1';
-        return;
+      if (user) {
+        handleUserLoggedIn(user);
       }
-
-      const nick = document.getElementById('nicknameInput').value.trim() || user.displayName || '한글학사';
-      currentUser.uid = user.uid;
-      currentUser.displayName = nick;
-
-      loadUserIsolatedProfile(user.uid);
-      currentUser.displayName = nick;
-
-      await saveScoreToFirestore(currentUser);
-      document.getElementById('userBar').style.display = 'flex';
-      showScreen('lobbyScreen');
     } catch (e) {
-      alert("⚠️ 구글 로그인 오류 안내:\n\n" + e.message);
+      alert("⚠️ 구글 로그인 안내:\n\n" + e.message);
     } finally {
       btnGoogle.disabled = false;
       btnGoogle.style.opacity = '1';
