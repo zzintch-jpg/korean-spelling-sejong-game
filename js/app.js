@@ -1,6 +1,6 @@
 // ==========================================================================
-// 훈민정음 맞춤법 수호대 - 100% 단일 자립형 무결점 애플리케이션 스크립트 (v3.0.0)
-// 모듈/CORS/네트워크 종속성 0% - 모든 스마트폰/인앱브라우저/PC 100% 즉시 동작
+// 훈민정음 맞춤법 수호대 - 100% 단일 자립형 풍부한 리얼타임 효과음 엔진 (v3.1.0)
+// 모바일/데스크톱 100% 오디오 자동 언락 및 버튼/정답/오답/팡파르 효과음 연동
 // ==========================================================================
 
 (function() {
@@ -149,7 +149,7 @@
     return shuffled.slice(0, size);
   }
 
-  // 3. 사운드 믹서
+  // 3. 🔊 고품질 Web Audio 효과음 합성 엔진 (버튼 클릭 / 정답 / 오답 / 팡파르)
   let audioCtx = null;
   function getAudioContext() {
     if (!audioCtx) {
@@ -164,46 +164,86 @@
     return audioCtx;
   }
 
+  function unlockAudio() {
+    try {
+      const ctx = getAudioContext();
+      if (ctx && ctx.state === 'suspended') {
+        ctx.resume();
+      }
+    } catch (e) {}
+  }
+  document.addEventListener('click', unlockAudio);
+  document.addEventListener('touchstart', unlockAudio);
+
   function playSound(type) {
     try {
       const ctx = getAudioContext();
       if (!ctx) return;
-      const osc = ctx.createOscillator();
-      const gain = ctx.createGain();
-      osc.connect(gain);
-      gain.connect(ctx.destination);
-
       const now = ctx.currentTime;
 
-      if (type === 'correct') {
-        osc.type = 'sine';
-        osc.frequency.setValueAtTime(523.25, now);
-        osc.frequency.exponentialRampToValueAtTime(659.25, now + 0.1);
-        osc.frequency.exponentialRampToValueAtTime(783.99, now + 0.2);
-        gain.gain.setValueAtTime(0.3, now);
-        gain.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
+      if (type === 'click') {
+        // 경쾌한 통통 버튼 클릭음 (Pop Sound)
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(800, now);
+        osc.frequency.exponentialRampToValueAtTime(400, now + 0.05);
+        gain.gain.setValueAtTime(0.2, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.05);
         osc.start(now);
-        osc.stop(now + 0.3);
+        osc.stop(now + 0.05);
+      } else if (type === 'correct') {
+        // 맑고 상쾌한 딩동 정답 효과음 (C5 -> G5)
+        const osc1 = ctx.createOscillator();
+        const gain1 = ctx.createGain();
+        osc1.connect(gain1);
+        gain1.connect(ctx.destination);
+        osc1.type = 'sine';
+        osc1.frequency.setValueAtTime(523.25, now); // C5
+        gain1.gain.setValueAtTime(0.3, now);
+        gain1.gain.exponentialRampToValueAtTime(0.01, now + 0.15);
+        osc1.start(now);
+        osc1.stop(now + 0.15);
+
+        const osc2 = ctx.createOscillator();
+        const gain2 = ctx.createGain();
+        osc2.connect(gain2);
+        gain2.connect(ctx.destination);
+        osc2.type = 'sine';
+        osc2.frequency.setValueAtTime(783.99, now + 0.1); // G5
+        gain2.gain.setValueAtTime(0.35, now + 0.1);
+        gain2.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
+        osc2.start(now + 0.1);
+        osc2.stop(now + 0.3);
       } else if (type === 'wrong') {
+        // 삐빅 오답음 (F3 -> Db3)
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.connect(gain);
+        gain.connect(ctx.destination);
         osc.type = 'sawtooth';
-        osc.frequency.setValueAtTime(150, now);
-        osc.frequency.linearRampToValueAtTime(100, now + 0.25);
-        gain.gain.setValueAtTime(0.3, now);
-        gain.gain.exponentialRampToValueAtTime(0.01, now + 0.25);
+        osc.frequency.setValueAtTime(220, now);
+        osc.frequency.exponentialRampToValueAtTime(130, now + 0.2);
+        gain.gain.setValueAtTime(0.25, now);
+        gain.gain.exponentialRampToValueAtTime(0.01, now + 0.2);
         osc.start(now);
-        osc.stop(now + 0.25);
+        osc.stop(now + 0.2);
       } else if (type === 'fanfare') {
-        const notes = [523.25, 659.25, 783.99, 1046.50];
+        // 승리 팡파르 (C5 -> E5 -> G5 -> C6 -> E6)
+        const notes = [523.25, 659.25, 783.99, 1046.50, 1318.51];
         notes.forEach((freq, idx) => {
           const o = ctx.createOscillator();
           const g = ctx.createGain();
           o.connect(g);
           g.connect(ctx.destination);
-          o.frequency.setValueAtTime(freq, now + idx * 0.12);
-          g.gain.setValueAtTime(0.3, now + idx * 0.12);
-          g.gain.exponentialRampToValueAtTime(0.01, now + idx * 0.12 + 0.25);
-          o.start(now + idx * 0.12);
-          o.stop(now + idx * 0.12 + 0.25);
+          o.type = 'sine';
+          o.frequency.setValueAtTime(freq, now + idx * 0.1);
+          g.gain.setValueAtTime(0.3, now + idx * 0.1);
+          g.gain.exponentialRampToValueAtTime(0.01, now + idx * 0.1 + 0.35);
+          o.start(now + idx * 0.1);
+          o.stop(now + idx * 0.1 + 0.35);
         });
       }
     } catch (e) {}
@@ -247,6 +287,7 @@
   }
 
   function handleUserLoggedIn(user) {
+    playSound('click');
     try {
       const nickInput = document.getElementById('nicknameInput');
       const inputNick = nickInput ? nickInput.value.trim() : '';
@@ -271,6 +312,7 @@
 
   // 5. 전역 안전 로그인 핸들러 노출
   window.startGuestLogin = function() {
+    playSound('click');
     const nickInput = document.getElementById('nicknameInput');
     const nick = nickInput ? nickInput.value.trim() : '한글도전자';
     const guestId = Math.random().toString(36).substr(2, 6);
@@ -279,6 +321,7 @@
   };
 
   window.startGoogleLogin = function() {
+    playSound('click');
     const nickInput = document.getElementById('nicknameInput');
     const nick = nickInput ? nickInput.value.trim() : '한글도전자';
     const guestId = Math.random().toString(36).substr(2, 6);
@@ -346,6 +389,7 @@
   let g1ActiveWordsPool = [];
 
   function startGame1() {
+    playSound('click');
     g1Score = 0;
     g1Wrong = 0;
     g1TimeLeft = 30;
@@ -441,6 +485,7 @@
   let g2QuestionsPool = [];
 
   function startGame2() {
+    playSound('click');
     g2Score = 0;
     g2Wrong = 0;
     g2TimeLeft = 30;
@@ -516,6 +561,7 @@
   }
 
   function startGame3() {
+    playSound('click');
     g3Score = 0;
     g3Wrong = 0;
     g3TimeLeft = 30;
@@ -627,6 +673,7 @@
   let bossQuestionsPool = [];
 
   function startBossBattle() {
+    playSound('click');
     bossQIdx = 0;
     bossScore = 0;
     bossQuestionsPool = getRandomSubarray(BOSS_QUESTIONS, 10);
@@ -692,6 +739,7 @@
         `경축합니다! 10문제 모두 만점으로 세종대왕님과의 대결에서 승리하셨습니다!<br><br>
          명예로운 <strong>[훈민정음 마스터]</strong> 칭호를 획득하였으며, 명예의 전당에 영원히 기록됩니다!`);
     } else {
+      playSound('wrong');
       showModal("세종대왕: 아쉽구나!", 
         `10문제 중 <strong>${bossScore}문제</strong>를 맞혔습니다.<br>
          보스전 성공을 위해서는 10문제 만점이 필요합니다. 다시 올바른 맞춤법을 연마한 후 재도전해 보아라!`);
@@ -701,6 +749,7 @@
 
   // 10. 명예의 전당
   function renderHallOfFame(type) {
+    playSound('click');
     showScreen('hallScreen');
     const tbody = document.getElementById('leaderboardBody');
     if (tbody) tbody.innerHTML = '';
@@ -761,6 +810,7 @@
     const btnLogout = document.getElementById('btnLogout');
     if (btnLogout) {
       btnLogout.onclick = function() {
+        playSound('click');
         currentUser = {
           uid: '',
           displayName: '',
@@ -786,7 +836,10 @@
 
     const backBtns = document.querySelectorAll('.btn-back-lobby');
     for (let i = 0; i < backBtns.length; i++) {
-      backBtns[i].onclick = function() { showScreen('lobbyScreen'); };
+      backBtns[i].onclick = function() {
+        playSound('click');
+        showScreen('lobbyScreen');
+      };
     }
 
     const b1 = document.getElementById('btnGame1');
@@ -801,6 +854,7 @@
     const bossB = document.getElementById('btnBossBattle');
     if (bossB) {
       bossB.onclick = function() {
+        playSound('click');
         if (!isBossUnlocked(currentUser.collectedTokens)) {
           showModal("보스전 잠김 👑", "5개 한글 자음 토큰(`ㄱ,ㄴ,ㄷ,ㄹ,ㅁ`)을 모두 모아야 세종대왕에게 도전할 수 있습니다!");
           return;
@@ -815,6 +869,7 @@
     const tabT = document.getElementById('tabTokens');
     if (tabT) {
       tabT.onclick = function(e) {
+        playSound('click');
         const tabs = document.querySelectorAll('.tab-btn');
         for (let i = 0; i < tabs.length; i++) tabs[i].classList.remove('active');
         e.target.classList.add('active');
@@ -825,6 +880,7 @@
     const tabC = document.getElementById('tabClears');
     if (tabC) {
       tabC.onclick = function(e) {
+        playSound('click');
         const tabs = document.querySelectorAll('.tab-btn');
         for (let i = 0; i < tabs.length; i++) tabs[i].classList.remove('active');
         e.target.classList.add('active');
@@ -835,6 +891,7 @@
     const modalC = document.getElementById('modalBtnClose');
     if (modalC) {
       modalC.onclick = function() {
+        playSound('click');
         const modal = document.getElementById('modalOverlay');
         if (modal) modal.style.display = 'none';
       };
