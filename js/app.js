@@ -1,5 +1,5 @@
 // ==========================================================================
-// 훈민정음 맞춤법 수호대 - 메인 어플리케이션 엔진 (탐정 모드 단어 클릭 매칭 완벽 수정)
+// 훈민정음 맞춤법 수호대 - 메인 어플리케이션 엔진 (5개 자음 토큰 밸런싱)
 // ==========================================================================
 
 import { GAME1_WORDS, GAME2_QUESTIONS, GAME3_QUESTIONS, BOSS_QUESTIONS, getRandomSubarray } from './questions.js';
@@ -116,10 +116,10 @@ function updateUI() {
   const bossLockText = document.getElementById('bossLockText');
   if (isBossUnlocked(currentUser.collectedTokens)) {
     bossBtn.classList.remove('locked');
-    bossLockText.textContent = "🔥 14개 자음 토큰 수집 완료! 세종대왕 보스전 도전 가능!";
+    bossLockText.textContent = "🔥 5개 자음 토큰(ㄱ,ㄴ,ㄷ,ㄹ,ㅁ) 수집 완료! 세종대왕 보스전 도전 가능!";
   } else {
     bossBtn.classList.add('locked');
-    bossLockText.textContent = `14개 한글 토큰을 모아 세종대왕과의 10문제 최종 결투에 도전하세요! (${currentUser.collectedTokens.length}/14)`;
+    bossLockText.textContent = `5개 한글 토큰(ㄱ,ㄴ,ㄷ,ㄹ,ㅁ)을 모아 세종대왕과의 10문제 최종 결투에 도전하세요! (${currentUser.collectedTokens.length}/5)`;
   }
 }
 
@@ -185,7 +185,7 @@ function initUIEventListeners() {
 
   document.getElementById('btnBossBattle').addEventListener('click', () => {
     if (!isBossUnlocked(currentUser.collectedTokens)) {
-      showModal("보스전 잠김 👑", "14개 한글 자음 토큰(`가`~`하`)을 모두 모아야 세종대왕에게 도전할 수 있습니다!");
+      showModal("보스전 잠김 👑", "5개 한글 자음 토큰(`ㄱ,ㄴ,ㄷ,ㄹ,ㅁ`)을 모두 모아야 세종대왕에게 도전할 수 있습니다!");
       return;
     }
     startBossBattle();
@@ -379,7 +379,7 @@ function endGame2(isSuccess) {
 }
 
 // ==========================================================================
-// 🔍 미니게임 3: 맞춤법 탐정 (단어 매칭 정밀도 100% 검증)
+// 🔍 미니게임 3: 맞춤법 탐정
 // ==========================================================================
 let g3Score = 0;
 let g3Wrong = 0;
@@ -421,7 +421,6 @@ function loadGame3Question() {
     span.textContent = w;
 
     span.addEventListener('click', () => {
-      // 문장 속 특수문자 제거 후 비교
       const cleanW = w.replace(/[.,?!]/g, '');
       const cleanWrongWord = q.wrongWord.replace(/[.,?!]/g, '');
 
@@ -468,7 +467,7 @@ function awardTokenAndClears(msg) {
   currentUser.totalClears = (currentUser.totalClears || 0) + 1;
 
   let newEarnedToken = null;
-  for (let i = 0; i < 14; i++) {
+  for (let i = 0; i < 5; i++) {
     if (!currentUser.collectedTokens.includes(i)) {
       currentUser.collectedTokens.push(i);
       newEarnedToken = HANGUL_TOKENS[i];
@@ -483,7 +482,7 @@ function awardTokenAndClears(msg) {
   if (newEarnedToken) {
     modalBody += `✨ 축하합니다! 훈민정음 자음 토큰 <strong>[${newEarnedToken.char}] (${newEarnedToken.name})</strong>를 새로 획득하셨습니다!`;
   } else {
-    modalBody += `🎉 이미 14개 한글 토큰을 모두 수집하셨습니다! 세종대왕 보스전에 도전하세요!`;
+    modalBody += `🎉 이미 5개 한글 토큰(ㄱ,ㄴ,ㄷ,ㄹ,ㅁ)을 모두 수집하셨습니다! 세종대왕 보스전에 도전하세요!`;
   }
 
   showModal("미니게임 클리어!", modalBody);

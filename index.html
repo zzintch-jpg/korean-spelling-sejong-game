@@ -17,7 +17,7 @@
         <h1 class="game-title">훈민정음 맞춤법 수호대</h1>
         <span class="title-decor">❖</span>
       </div>
-      <p class="subtitle">3개의 미니게임을 통과해 한글 토큰 14개를 모아 세종대왕에게 도전하라!</p>
+      <p class="subtitle">3개의 미니게임을 통과해 한글 토큰 5개를 모아 세종대왕에게 도전하라!</p>
     </header>
 
     <!-- 유저 정보 바 -->
@@ -29,7 +29,7 @@
         <button id="btnLogout" class="btn-logout">🚪 다른 계정으로 로그인</button>
       </div>
       <div class="token-status">
-        <span class="token-badge">한글 토큰: <strong id="tokenCount">0</strong> / 14</span>
+        <span class="token-badge">한글 토큰: <strong id="tokenCount">0</strong> / 5</span>
       </div>
     </div>
 
@@ -58,11 +58,11 @@
     <section id="lobbyScreen" class="screen">
       <div class="lobby-container">
         
-        <!-- 14개 자음 토큰 수집판 -->
+        <!-- 5개 자음 토큰 수집판 -->
         <div class="token-inventory-panel">
-          <h3>✨ 훈민정음 자음 토큰 수집판 (<span id="tokenPanelCount">0</span>/14)</h3>
+          <h3>✨ 훈민정음 자음 토큰 수집판 (<span id="tokenPanelCount">0</span>/5)</h3>
           <div id="tokenGrid" class="token-grid">
-            <!-- 14개 자음 아이템이 JS로 동적 생성됨 -->
+            <!-- 5개 자음 아이템이 JS로 동적 생성됨 -->
           </div>
         </div>
 
@@ -99,7 +99,7 @@
             <img src="assets/king_sejong.jpg" alt="세종대왕" class="boss-img-thumbnail">
             <div class="boss-banner-info">
               <h3>👑 세종대왕 보스전</h3>
-              <p id="bossLockText">14개 한글 토큰을 모아 세종대왕과의 10문제 최종 결투에 도전하세요!</p>
+              <p id="bossLockText">5개 한글 토큰(ㄱ,ㄴ,ㄷ,ㄹ,ㅁ)을 모아 세종대왕과의 10문제 최종 결투에 도전하세요!</p>
             </div>
           </div>
           <div class="boss-banner-right">
@@ -181,7 +181,7 @@
         </div>
 
         <div class="boss-dialogue">
-          <p id="bossSpeech">"훈민정음 14개 토큰을 모아 나에게 도전하다니 대견하구나! 과연 10문제를 모두 맞혀 훈민정음 마스터가 될 수 있겠느냐?"</p>
+          <p id="bossSpeech">"훈민정음 5개 토큰(ㄱ,ㄴ,ㄷ,ㄹ,ㅁ)을 모아 나에게 도전하다니 대견하구나! 과연 10문제를 모두 맞혀 훈민정음 마스터가 될 수 있겠느냐?"</p>
         </div>
 
         <div class="game-header" style="background: rgba(0,0,0,0.6); color:#FFF; border-color: var(--color-gold);">

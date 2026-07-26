@@ -294,7 +294,7 @@ h1.game-title {
   border-radius: 16px;
 }
 
-/* 2. 메인 로비 와이드 스크린 */
+/* 2. 메인 로비 스크린 (5개 자음 토큰 그리드) */
 .lobby-container {
   width: 100%;
   display: flex;
@@ -318,27 +318,28 @@ h1.game-title {
   margin-bottom: 18px;
 }
 
+/* 5개 토큰 아이템 가로 5열 큼직하게 배치 */
 .token-grid {
   display: grid;
-  grid-template-columns: repeat(14, 1fr);
-  gap: 12px;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 20px;
   width: 100%;
-  max-width: 1200px;
+  max-width: 680px;
   margin: 0 auto;
 }
 
 .token-item {
-  width: 58px;
-  height: 58px;
+  width: 72px;
+  height: 72px;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   font-family: var(--font-straight);
-  font-size: 1.75rem;
+  font-size: 2.2rem;
   background: #E9ECEF;
   color: #ADB5BD;
-  border: 2px solid #DEE2E6;
+  border: 3px solid #DEE2E6;
   transition: all 0.3s ease;
   margin: 0 auto;
 }
@@ -346,9 +347,9 @@ h1.game-title {
 .token-item.collected {
   background: radial-gradient(circle, #FFF9E6, var(--color-gold-primary));
   color: #3D2B05;
-  border: 2px solid #8C6D2D;
-  box-shadow: 0 0 18px rgba(197, 160, 89, 0.6);
-  transform: scale(1.12);
+  border: 3px solid #8C6D2D;
+  box-shadow: 0 0 22px rgba(197, 160, 89, 0.8);
+  transform: scale(1.14);
 }
 
 /* 3종 미니게임 카드 */
@@ -518,7 +519,7 @@ h1.game-title {
   border: 2px solid #EF9A9A;
 }
 
-/* 🎯 미니게임 1 터치 무대 (잘림 100% 방지 및 글씨 대폭 확대) */
+/* 🎯 미니게임 1 터치 무대 */
 .touch-game-stage {
   width: 100%;
   height: 520px;
@@ -530,7 +531,6 @@ h1.game-title {
   box-sizing: border-box;
 }
 
-/* Floating 낱말 카드 글씨 2.5rem 대폭 확대 및 줄바꿈 차단 */
 .floating-word {
   position: absolute;
   padding: 18px 42px;
@@ -821,7 +821,7 @@ h1.game-title {
 /* 모바일 반응형 처리 */
 @media (max-width: 1024px) {
   .app-container { width: 100%; border-radius: 0; }
-  .token-grid { grid-template-columns: repeat(7, 1fr); }
+  .token-grid { grid-template-columns: repeat(5, 1fr); }
   .minigame-horizontal-row { grid-template-columns: 1fr; }
 }
 
