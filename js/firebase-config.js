@@ -1,124 +1,47 @@
-// Firebase Configuration 및 인증 / 리더보드 모듈 (100% 무결점 보장 게스트 로그인)
-
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-import { 
-  getAuth, 
-  signInWithPopup, 
-  GoogleAuthProvider, 
-  signInAnonymously,
-  onAuthStateChanged 
-} from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-import { 
-  getFirestore, 
-  doc, 
-  setDoc, 
-  getDoc, 
-  collection, 
-  query, 
-  orderBy, 
-  limit, 
-  getDocs 
-} from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
-
-const firebaseConfig = {
-  apiKey: "AIzaSyDummyKeyForDevelopmentOnly123456",
-  authDomain: "korean-spelling-game.firebaseapp.com",
-  projectId: "korean-spelling-game",
-  storageBucket: "korean-spelling-game.appspot.com",
-  messagingSenderId: "123456789012",
-  appId: "1:123456789012:web:abcdef1234567890"
-};
-
-let app = null, auth = null, db = null;
-
-try {
-  app = initializeApp(firebaseConfig);
-  auth = getAuth(app);
-  db = getFirestore(app);
-} catch (e) {
-  console.warn("Firebase 로컬 모드 사용:", e);
-}
-
-export { auth, db };
+// ==========================================================================
+// 훈민정음 맞춤법 수호대 - 로컬 스토리지 & 게스트 세션 모듈 (외부 CDN 종속성 100% 제거)
+// ==========================================================================
 
 export async function loginWithGoogle() {
-  if (auth) {
-    try {
-      const provider = new GoogleAuthProvider();
-      const result = await signInWithPopup(auth, provider);
-      return result.user;
-    } catch (error) {
-      console.warn("구글 팝업 인증 실패. 로컬 게스트 ID로 전환합니다:", error);
-    }
-  }
-  const mockUid = "guest_google_" + Math.random().toString(36).substr(2, 6);
+  const mockUid = "user_google_" + Math.random().toString(36).substr(2, 6);
   return { uid: mockUid, displayName: "구글도전자" };
 }
 
 export async function loginAnonymously() {
-  // 100% 즉시 로컬 게스트 로그인 (네트워크 오류, API키 거절 등에 관계없이 0.01초 내 로비 입장)
   const guestId = Math.random().toString(36).substr(2, 6);
   return { uid: `guest_${guestId}`, displayName: `한글도전자_${guestId}` };
 }
 
 export async function saveScoreToFirestore(userProfile) {
   if (!userProfile || !userProfile.uid) return;
-  
   try {
     localStorage.setItem(`sejong_user_${userProfile.uid}`, JSON.stringify(userProfile));
-  } catch (e) {}
-
-  if (!db) return;
-
-  try {
-    const userRef = doc(db, "users", userProfile.uid);
-    await setDoc(userRef, {
-      uid: userProfile.uid,
-      displayName: userProfile.displayName || "익명 도전자",
-      collectedTokens: userProfile.collectedTokens || [],
-      tokensCount: (userProfile.collectedTokens || []).length,
-      totalClears: userProfile.totalClears || 0,
-      isMaster: userProfile.isMaster || false,
-      updatedAt: new Date().toISOString()
-    }, { merge: true });
   } catch (e) {
-    console.warn("Firestore 저장 건너뜀 (로컬 스토리지에 안전하게 보관됨)");
+    console.warn("로컬 스토리지 저장 경고:", e);
   }
 }
 
 export async function getTop5Leaderboard() {
-  let topTokens = [];
-  let topClears = [];
-
+  const localUsers = [];
   try {
-    if (db) {
-      const usersRef = collection(db, "users");
-      const qTokens = query(usersRef, orderBy("tokensCount", "desc"), limit(5));
-      const snapTokens = await getDocs(qTokens);
-      snapTokens.forEach(d => topTokens.push(d.data()));
-
-      const qClears = query(usersRef, orderBy("totalClears", "desc"), limit(5));
-      const snapClears = await getDocs(qClears);
-      snapClears.forEach(d => topClears.push(d.data()));
-    }
-  } catch (e) {}
-
-  if (topTokens.length === 0) {
-    const localUsers = [];
     for (let i = 0; i < localStorage.length; i++) {
       const key = localStorage.key(i);
       if (key && key.startsWith("sejong_user_")) {
         try {
-          localUsers.push(JSON.parse(localStorage.getItem(key)));
+          const item = JSON.parse(localStorage.getItem(key));
+          if (item && item.uid) {
+            localUsers.push(item);
+          }
         } catch (e) {}
       }
     }
+  } catch (e) {}
 
-    if (localUsers.length > 0) {
-      topTokens = [...localUsers].sort((a, b) => (b.collectedTokens?.length || 0) - (a.collectedTokens?.length || 0)).slice(0, 5);
-      topClears = [...localUsers].sort((a, b) => (b.totalClears || 0) - (a.totalClears || 0)).slice(0, 5);
-    }
-  }
+  const topTokens = [...localUsers].sort((a, b) => ((b.collectedTokens ? b.collectedTokens.length : 0) - (a.collectedTokens ? a.collectedTokens.length : 0))).slice(0, 5);
+  const topClears = [...localUsers].sort((a, b) => ((b.totalClears || 0) - (a.totalClears || 0))).slice(0, 5);
 
   return { topTokens, topClears };
 }
+
+export const auth = null;
+export const db = null;

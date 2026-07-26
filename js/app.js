@@ -1,56 +1,57 @@
 // ==========================================================================
-// 훈민정음 맞춤법 수호대 - 메인 어플리케이션 엔진 (프로필 방어적 정제 & 100% 무결점 로비 진입)
+// 훈민정음 맞춤법 수호대 - 메인 어플리케이션 엔진 (100% 자체 완결형 무결점 엔진)
 // ==========================================================================
 
 import { GAME1_WORDS, GAME2_QUESTIONS, GAME3_QUESTIONS, BOSS_QUESTIONS, getRandomSubarray } from './questions.js';
 import { HANGUL_TOKENS, isBossUnlocked } from './tokens.js';
-import { loginWithGoogle, loginAnonymously, saveScoreToFirestore, getTop5Leaderboard, auth } from './firebase-config.js';
-import { signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+import { loginWithGoogle, loginAnonymously, saveScoreToFirestore, getTop5Leaderboard } from './firebase-config.js';
 
 const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 
 function playSound(type) {
-  if (audioCtx.state === 'suspended') {
-    audioCtx.resume();
-  }
-  const osc = audioCtx.createOscillator();
-  const gain = audioCtx.createGain();
-  osc.connect(gain);
-  gain.connect(audioCtx.destination);
+  try {
+    if (audioCtx.state === 'suspended') {
+      audioCtx.resume();
+    }
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+    osc.connect(gain);
+    gain.connect(audioCtx.destination);
 
-  const now = audioCtx.currentTime;
+    const now = audioCtx.currentTime;
 
-  if (type === 'correct') {
-    osc.type = 'sine';
-    osc.frequency.setValueAtTime(523.25, now);
-    osc.frequency.exponentialRampToValueAtTime(659.25, now + 0.1);
-    osc.frequency.exponentialRampToValueAtTime(783.99, now + 0.2);
-    gain.gain.setValueAtTime(0.3, now);
-    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
-    osc.start(now);
-    osc.stop(now + 0.3);
-  } else if (type === 'wrong') {
-    osc.type = 'sawtooth';
-    osc.frequency.setValueAtTime(150, now);
-    osc.frequency.linearRampToValueAtTime(100, now + 0.25);
-    gain.gain.setValueAtTime(0.3, now);
-    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.25);
-    osc.start(now);
-    osc.stop(now + 0.25);
-  } else if (type === 'fanfare') {
-    const notes = [523.25, 659.25, 783.99, 1046.50];
-    notes.forEach((freq, idx) => {
-      const o = audioCtx.createOscillator();
-      const g = audioCtx.createGain();
-      o.connect(g);
-      g.connect(audioCtx.destination);
-      o.frequency.setValueAtTime(freq, now + idx * 0.12);
-      g.gain.setValueAtTime(0.3, now + idx * 0.12);
-      g.gain.exponentialRampToValueAtTime(0.01, now + idx * 0.12 + 0.25);
-      o.start(now + idx * 0.12);
-      o.stop(now + idx * 0.12 + 0.25);
-    });
-  }
+    if (type === 'correct') {
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(523.25, now);
+      osc.frequency.exponentialRampToValueAtTime(659.25, now + 0.1);
+      osc.frequency.exponentialRampToValueAtTime(783.99, now + 0.2);
+      gain.gain.setValueAtTime(0.3, now);
+      gain.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
+      osc.start(now);
+      osc.stop(now + 0.3);
+    } else if (type === 'wrong') {
+      osc.type = 'sawtooth';
+      osc.frequency.setValueAtTime(150, now);
+      osc.frequency.linearRampToValueAtTime(100, now + 0.25);
+      gain.gain.setValueAtTime(0.3, now);
+      gain.gain.exponentialRampToValueAtTime(0.01, now + 0.25);
+      osc.start(now);
+      osc.stop(now + 0.25);
+    } else if (type === 'fanfare') {
+      const notes = [523.25, 659.25, 783.99, 1046.50];
+      notes.forEach((freq, idx) => {
+        const o = audioCtx.createOscillator();
+        const g = audioCtx.createGain();
+        o.connect(g);
+        g.connect(audioCtx.destination);
+        o.frequency.setValueAtTime(freq, now + idx * 0.12);
+        g.gain.setValueAtTime(0.3, now + idx * 0.12);
+        g.gain.exponentialRampToValueAtTime(0.01, now + idx * 0.12 + 0.25);
+        o.start(now + idx * 0.12);
+        o.stop(now + idx * 0.12 + 0.25);
+      });
+    }
+  } catch (e) {}
 }
 
 let currentUser = {
@@ -64,11 +65,6 @@ let currentUser = {
 let activeTimer = null;
 let currentScreen = 'loginScreen';
 
-document.addEventListener('DOMContentLoaded', () => {
-  initUIEventListeners();
-});
-
-// 프로필 데이터 타입 방어적 정제 (TypeError: Cannot read properties of undefined 100% 원천 차단)
 function sanitizeProfile() {
   if (!currentUser.uid) currentUser.uid = 'guest_' + Math.random().toString(36).substr(2, 6);
   if (!currentUser.displayName) currentUser.displayName = '한글도전자';
@@ -78,21 +74,20 @@ function sanitizeProfile() {
 }
 
 function loadUserIsolatedProfile(uid) {
-  const saved = localStorage.getItem(`sejong_user_${uid}`);
-  if (saved) {
-    try {
+  try {
+    const saved = localStorage.getItem(`sejong_user_${uid}`);
+    if (saved) {
       const parsed = JSON.parse(saved);
       currentUser = { ...currentUser, ...parsed };
-    } catch (e) {
-      console.warn("격리 프로필 파싱 오류:", e);
     }
-  }
+  } catch (e) {}
   sanitizeProfile();
 }
 
 function handleUserLoggedIn(user) {
   try {
-    const inputNick = document.getElementById('nicknameInput').value.trim();
+    const nickInput = document.getElementById('nicknameInput');
+    const inputNick = nickInput ? nickInput.value.trim() : '';
     currentUser.uid = user.uid;
     currentUser.displayName = inputNick || user.displayName || '한글도전자';
 
@@ -107,7 +102,7 @@ function handleUserLoggedIn(user) {
     if (userBar) userBar.style.display = 'flex';
     showScreen('lobbyScreen');
   } catch (err) {
-    console.error("로그인 예외 방지 핸들링:", err);
+    console.error("로그인 예외 처리:", err);
     sanitizeProfile();
     showScreen('lobbyScreen');
   }
@@ -165,10 +160,7 @@ function showScreen(screenId) {
 function initUIEventListeners() {
   const btnLogout = document.getElementById('btnLogout');
   if (btnLogout) {
-    btnLogout.addEventListener('click', async () => {
-      if (auth) {
-        try { await signOut(auth); } catch (e) {}
-      }
+    btnLogout.addEventListener('click', () => {
       currentUser = {
         uid: '',
         displayName: '',
@@ -185,9 +177,10 @@ function initUIEventListeners() {
   const btnAnon = document.getElementById('btnAnonLogin');
   if (btnAnon) {
     btnAnon.addEventListener('click', async () => {
-      const nick = document.getElementById('nicknameInput').value.trim() || '한글도전자';
+      const nickInput = document.getElementById('nicknameInput');
+      const nick = nickInput ? nickInput.value.trim() : '한글도전자';
       const user = await loginAnonymously();
-      user.displayName = nick;
+      user.displayName = nick || '한글도전자';
       handleUserLoggedIn(user);
     });
   }
@@ -195,16 +188,12 @@ function initUIEventListeners() {
   const btnGoogle = document.getElementById('btnGoogleLogin');
   if (btnGoogle) {
     btnGoogle.addEventListener('click', async () => {
-      try {
-        const user = await loginWithGoogle();
-        if (user) {
-          handleUserLoggedIn(user);
-        }
-      } catch (e) {
-        const nick = document.getElementById('nicknameInput').value.trim() || '한글도전자';
-        const fallbackUser = await loginAnonymously();
-        fallbackUser.displayName = nick;
-        handleUserLoggedIn(fallbackUser);
+      const nickInput = document.getElementById('nicknameInput');
+      const nick = nickInput ? nickInput.value.trim() : '한글도전자';
+      const user = await loginWithGoogle();
+      if (user) {
+        if (nick) user.displayName = nick;
+        handleUserLoggedIn(user);
       }
     });
   }
@@ -261,6 +250,12 @@ function initUIEventListeners() {
       if (modal) modal.style.display = 'none';
     });
   }
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initUIEventListeners);
+} else {
+  initUIEventListeners();
 }
 
 // ==========================================================================
