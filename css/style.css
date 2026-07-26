@@ -109,7 +109,7 @@ h1.game-title {
   font-weight: 400;
 }
 
-/* 유저 정보 바 */
+/* 유저 정보 바 ('도전자:' 와 닉네임 글자 크기 100% 일치) */
 .user-bar {
   background: linear-gradient(to right, #F8F9FA, #F1F3F5);
   padding: 14px 36px;
@@ -117,8 +117,6 @@ h1.game-title {
   justify-content: space-between;
   align-items: center;
   border-bottom: 2px solid #E9ECEF;
-  font-weight: 700;
-  font-size: 1.15rem;
 }
 
 .user-info-left {
@@ -127,14 +125,23 @@ h1.game-title {
   gap: 16px;
 }
 
+.user-info {
+  font-family: var(--font-straight);
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: var(--color-text-dark);
+}
+
 .user-info span {
+  font-family: var(--font-straight);
   color: var(--color-royal-red);
-  font-size: 1.3rem;
+  font-size: 1.35rem;
+  font-weight: 700;
 }
 
 .btn-logout {
   font-family: var(--font-straight);
-  font-size: 1rem;
+  font-size: 1.05rem;
   padding: 6px 16px;
   border: 2px solid #CED4DA;
   border-radius: 8px;
@@ -151,11 +158,12 @@ h1.game-title {
 }
 
 .token-badge {
+  font-family: var(--font-straight);
   background: linear-gradient(135deg, var(--color-gold-primary), var(--color-gold-dark));
   color: #FFF;
   padding: 8px 24px;
   border-radius: 30px;
-  font-size: 1.15rem;
+  font-size: 1.25rem;
   box-shadow: 0 4px 12px rgba(197, 160, 89, 0.3);
 }
 
@@ -518,7 +526,7 @@ h1.game-title {
   border: 2px solid #EF9A9A;
 }
 
-/* 🎯 미니게임 1 터치 무대 (3.0rem 초대형 글씨) */
+/* 🎯 미니게임 1 터치 무대 */
 .touch-game-stage {
   width: 100%;
   height: 540px;
@@ -552,7 +560,7 @@ h1.game-title {
   transform: scale(0.92);
 }
 
-/* ✍️ 미니게임 2 선택 카드 (3.2rem 문제 글씨 대폭 확대) */
+/* ✍️ 미니게임 2 선택 카드 */
 .choice-card-box {
   width: 100%;
   max-width: 1000px;
@@ -604,7 +612,7 @@ h1.game-title {
   transform: translateY(-4px);
 }
 
-/* 🔍 미니게임 3 탐정 카드 (3.0rem 글씨 대폭 확대) */
+/* 🔍 미니게임 3 탐정 카드 */
 .detective-box {
   width: 100%;
   max-width: 1000px;
@@ -719,7 +727,7 @@ h1.game-title {
   transform: translateX(6px);
 }
 
-/* 🏛️ 명예의 전당 (3.8rem 초대형 타이틀 및 시원한 테이블 글씨) */
+/* 🏛️ 명예의 전당 */
 .hall-container {
   width: 100%;
   max-width: 1000px;
