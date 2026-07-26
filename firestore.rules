@@ -1,0 +1,18 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // 1. 유저 개별 개인 데이터 (본인만 접근 및 수정 가능)
+    match /users/{userId} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+    }
+
+    // 2. 명예의 전당 리더보드 (공통 읽기 가능, 본인 점수만 기록 가능)
+    match /leaderboard/{userId} {
+      allow read: if true; // 누구나 명예의 전당 순위는 볼 수 있음
+      allow write: if request.auth != null && request.auth.uid == userId
+        // 개인정보 노출 방지: 닉네임, 토큰수, 클리어수, 마스터여부만 허용
+        && request.resource.data.keys().hasOnly(['uid', 'displayName', 'tokensCount', 'totalClears', 'isMaster', 'updatedAt']);
+    }
+  }
+}
