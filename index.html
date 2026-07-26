@@ -117,12 +117,15 @@
       </div>
     </section>
 
-    <!-- 3. 미니게임 1: 사격/터치 스크린 -->
+    <!-- 3. 미니게임 1: 사격/터치 스크린 (실시간 정답/오답 표시) -->
     <section id="game1Screen" class="screen">
       <div class="game-header">
         <button class="btn btn-back-lobby">⬅️ 로비로</button>
         <div class="timer-box">⏱️ 남은시간: <span id="g1Timer">30</span>초</div>
-        <div class="score-box">맞힌 개수: <span id="g1Score">0</span> / 10</div>
+        <div class="score-status-box">
+          <span class="correct-badge">⭕ 정답: <strong id="g1Score">0</strong> / 10</span>
+          <span class="wrong-badge">❌ 오답: <strong id="g1Wrong">0</strong>개</span>
+        </div>
       </div>
       <p style="margin-bottom: 12px; color: #5D4037; font-weight: 700; font-size: 1.25rem;">30초 안에 바른 맞춤법 단어 10개를 빠르게 터치하세요!</p>
       <div id="g1Stage" class="touch-game-stage">
@@ -130,12 +133,15 @@
       </div>
     </section>
 
-    <!-- 4. 미니게임 2: 선택형 빈칸 채우기 -->
+    <!-- 4. 미니게임 2: 선택형 빈칸 채우기 (실시간 정답/오답 표시) -->
     <section id="game2Screen" class="screen">
       <div class="game-header">
         <button class="btn btn-back-lobby">⬅️ 로비로</button>
         <div class="timer-box">⏱️ 남은시간: <span id="g2Timer">30</span>초</div>
-        <div class="score-box">맞힌 개수: <span id="g2Score">0</span> / 10</div>
+        <div class="score-status-box">
+          <span class="correct-badge">⭕ 정답: <strong id="g2Score">0</strong> / 10</span>
+          <span class="wrong-badge">❌ 오답: <strong id="g2Wrong">0</strong>개</span>
+        </div>
       </div>
       <div class="choice-card-box">
         <h3 style="font-family: var(--font-title); color: var(--color-brown-dark); font-size: 1.8rem;">빈칸에 알맞은 낱말은?</h3>
@@ -146,12 +152,15 @@
       </div>
     </section>
 
-    <!-- 5. 미니게임 3: 오류 탐정 -->
+    <!-- 5. 미니게임 3: 오류 탐정 (실시간 정답/오답 표시) -->
     <section id="game3Screen" class="screen">
       <div class="game-header">
         <button class="btn btn-back-lobby">⬅️ 로비로</button>
         <div class="timer-box">⏱️ 남은시간: <span id="g3Timer">30</span>초</div>
-        <div class="score-box">해결 문장: <span id="g3Score">0</span> / 10</div>
+        <div class="score-status-box">
+          <span class="correct-badge">⭕ 정답: <strong id="g3Score">0</strong> / 10</span>
+          <span class="wrong-badge">❌ 오답: <strong id="g3Wrong">0</strong>개</span>
+        </div>
       </div>
       <div class="detective-box">
         <h3 style="font-family: var(--font-title); color: var(--color-brown-dark); font-size: 1.8rem;">틀린 글자를 터치하여 바르게 고치세요!</h3>

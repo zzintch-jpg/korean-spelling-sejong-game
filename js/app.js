@@ -1,5 +1,5 @@
 // ==========================================================================
-// 훈민정음 맞춤법 수호대 - 메인 어플리케이션 엔진 (30초 내 10개 성공 시 토큰 지급)
+// 훈민정음 맞춤법 수호대 - 메인 어플리케이션 엔진 (실시간 정답 & 오답 개수 표시)
 // ==========================================================================
 
 import { GAME1_WORDS, GAME2_QUESTIONS, GAME3_QUESTIONS, BOSS_QUESTIONS, getRandomSubarray } from './questions.js';
@@ -210,19 +210,22 @@ function initUIEventListeners() {
 }
 
 // ==========================================================================
-// 🎯 미니게임 1: 맞춤법 터치 (30초 내 10개 성공 시 토큰 지급)
+// 🎯 미니게임 1: 맞춤법 터치 (실시간 정답/오답 집계)
 // ==========================================================================
 let g1Score = 0;
+let g1Wrong = 0;
 let g1TimeLeft = 30;
 let g1SpawnInterval = null;
 let g1ActiveWordsPool = [];
 
 function startGame1() {
   g1Score = 0;
-  g1TimeLeft = 30; // 30초
+  g1Wrong = 0;
+  g1TimeLeft = 30;
   g1ActiveWordsPool = getRandomSubarray(GAME1_WORDS, GAME1_WORDS.length);
   showScreen('game1Screen');
   document.getElementById('g1Score').textContent = g1Score;
+  document.getElementById('g1Wrong').textContent = g1Wrong;
   document.getElementById('g1Timer').textContent = g1TimeLeft;
 
   const stage = document.getElementById('g1Stage');
@@ -266,14 +269,13 @@ function spawnFloatingWord() {
       document.getElementById('g1Score').textContent = g1Score;
       el.style.background = '#A9DFBF';
 
-      // 10개 성공 조건 달성 시 즉시 성공 처리!
       if (g1Score >= 10) {
         endGame1(true);
       }
     } else {
       playSound('wrong');
-      g1Score = Math.max(0, g1Score - 1);
-      document.getElementById('g1Score').textContent = g1Score;
+      g1Wrong++;
+      document.getElementById('g1Wrong').textContent = g1Wrong;
       el.style.background = '#FADBD8';
     }
     setTimeout(() => el.remove(), 120);
@@ -287,28 +289,31 @@ function endGame1(isSuccess) {
   clearInterval(activeTimer);
   clearInterval(g1SpawnInterval);
   if (isSuccess) {
-    awardTokenAndClears(`🎯 미니게임 1(맞춤법 터치) 성공! (30초 내 10개 맞히기 달성!)`);
+    awardTokenAndClears(`🎯 미니게임 1(맞춤법 터치) 성공!<br>⭕ 정답: ${g1Score}개 | ❌ 오답: ${g1Wrong}개`);
   } else {
-    showModal("아쉽습니다!", `30초 안에 10개를 맞혀야 한글 토큰을 얻을 수 있습니다.<br>(맞힌 개수: ${g1Score}개)<br><br>다시 도전해 보세요!`);
+    showModal("아쉽습니다!", `30초 안에 정답 10개를 맞혀야 한글 토큰을 얻을 수 있습니다.<br>(⭕ 정답: ${g1Score}개 | ❌ 오답: ${g1Wrong}개)<br><br>다시 도전해 보세요!`);
     showScreen('lobbyScreen');
   }
 }
 
 // ==========================================================================
-// ✍️ 미니게임 2: 문장 빈칸 채우기 (30초 내 10개 성공 시 토큰 지급)
+// ✍️ 미니게임 2: 문장 빈칸 채우기 (실시간 정답/오답 집계)
 // ==========================================================================
 let g2Score = 0;
+let g2Wrong = 0;
 let g2TimeLeft = 30;
 let g2CurrentIdx = 0;
 let g2QuestionsPool = [];
 
 function startGame2() {
   g2Score = 0;
-  g2TimeLeft = 30; // 30초
+  g2Wrong = 0;
+  g2TimeLeft = 30;
   g2CurrentIdx = 0;
   g2QuestionsPool = getRandomSubarray(GAME2_QUESTIONS, GAME2_QUESTIONS.length);
   showScreen('game2Screen');
   document.getElementById('g2Score').textContent = g2Score;
+  document.getElementById('g2Wrong').textContent = g2Wrong;
   document.getElementById('g2Timer').textContent = g2TimeLeft;
 
   activeTimer = setInterval(() => {
@@ -344,6 +349,8 @@ function loadGame2Question() {
         }
       } else {
         playSound('wrong');
+        g2Wrong++;
+        document.getElementById('g2Wrong').textContent = g2Wrong;
       }
       g2CurrentIdx++;
       loadGame2Question();
@@ -355,28 +362,31 @@ function loadGame2Question() {
 function endGame2(isSuccess) {
   clearInterval(activeTimer);
   if (isSuccess) {
-    awardTokenAndClears(`✍️ 미니게임 2(빈칸 채우기) 성공! (30초 내 10개 맞히기 달성!)`);
+    awardTokenAndClears(`✍️ 미니게임 2(빈칸 채우기) 성공!<br>⭕ 정답: ${g2Score}개 | ❌ 오답: ${g2Wrong}개`);
   } else {
-    showModal("아쉽습니다!", `30초 안에 10개를 맞혀야 한글 토큰을 얻을 수 있습니다.<br>(맞힌 개수: ${g2Score}개)<br><br>다시 도전해 보세요!`);
+    showModal("아쉽습니다!", `30초 안에 정답 10개를 맞혀야 한글 토큰을 얻을 수 있습니다.<br>(⭕ 정답: ${g2Score}개 | ❌ 오답: ${g2Wrong}개)<br><br>다시 도전해 보세요!`);
     showScreen('lobbyScreen');
   }
 }
 
 // ==========================================================================
-// 🔍 미니게임 3: 맞춤법 탐정 (30초 내 10개 성공 시 토큰 지급)
+// 🔍 미니게임 3: 맞춤법 탐정 (실시간 정답/오답 집계)
 // ==========================================================================
 let g3Score = 0;
+let g3Wrong = 0;
 let g3TimeLeft = 30;
 let g3CurrentIdx = 0;
 let g3QuestionsPool = [];
 
 function startGame3() {
   g3Score = 0;
-  g3TimeLeft = 30; // 30초
+  g3Wrong = 0;
+  g3TimeLeft = 30;
   g3CurrentIdx = 0;
   g3QuestionsPool = getRandomSubarray(GAME3_QUESTIONS, GAME3_QUESTIONS.length);
   showScreen('game3Screen');
   document.getElementById('g3Score').textContent = g3Score;
+  document.getElementById('g3Wrong').textContent = g3Wrong;
   document.getElementById('g3Timer').textContent = g3TimeLeft;
 
   activeTimer = setInterval(() => {
@@ -411,15 +421,17 @@ function loadGame3Question() {
         span.style.fontWeight = 'bold';
 
         if (g3Score >= 10) {
-          setTimeout(() => endGame3(true), 400);
+          setTimeout(() => endGame3(true), 350);
           return;
         }
         setTimeout(() => {
           g3CurrentIdx++;
           loadGame3Question();
-        }, 600);
+        }, 550);
       } else {
         playSound('wrong');
+        g3Wrong++;
+        document.getElementById('g3Wrong').textContent = g3Wrong;
         span.style.color = 'red';
         setTimeout(() => span.style.color = '', 350);
       }
@@ -431,9 +443,9 @@ function loadGame3Question() {
 function endGame3(isSuccess) {
   clearInterval(activeTimer);
   if (isSuccess) {
-    awardTokenAndClears(`🔍 미니게임 3(맞춤법 탐정) 성공! (30초 내 10개 맞히기 달성!)`);
+    awardTokenAndClears(`🔍 미니게임 3(맞춤법 탐정) 성공!<br>⭕ 정답: ${g3Score}개 | ❌ 오답: ${g3Wrong}개`);
   } else {
-    showModal("아쉽습니다!", `30초 안에 10개를 맞혀야 한글 토큰을 얻을 수 있습니다.<br>(맞힌 개수: ${g3Score}개)<br><br>다시 도전해 보세요!`);
+    showModal("아쉽습니다!", `30초 안에 정답 10개를 맞혀야 한글 토큰을 얻을 수 있습니다.<br>(⭕ 정답: ${g3Score}개 | ❌ 오답: ${g3Wrong}개)<br><br>다시 도전해 보세요!`);
     showScreen('lobbyScreen');
   }
 }
