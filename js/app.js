@@ -1,5 +1,5 @@
 // ==========================================================================
-// 훈민정음 맞춤법 수호대 - 메인 어플리케이션 엔진 (100% 자체 완결형 무결점 엔진)
+// 훈민정음 맞춤법 수호대 - 메인 어플리케이션 엔진 (캐시 무효화 및 전역 안전망 연동)
 // ==========================================================================
 
 import { GAME1_WORDS, GAME2_QUESTIONS, GAME3_QUESTIONS, BOSS_QUESTIONS, getRandomSubarray } from './questions.js';
@@ -108,6 +108,25 @@ function handleUserLoggedIn(user) {
   }
 }
 
+// 전역 안전망 핸들러 노출 (인라인 onclick 지원)
+window.startGuestLogin = async function() {
+  const nickInput = document.getElementById('nicknameInput');
+  const nick = nickInput ? nickInput.value.trim() : '한글도전자';
+  const user = await loginAnonymously();
+  user.displayName = nick || '한글도전자';
+  handleUserLoggedIn(user);
+};
+
+window.startGoogleLogin = async function() {
+  const nickInput = document.getElementById('nicknameInput');
+  const nick = nickInput ? nickInput.value.trim() : '한글도전자';
+  const user = await loginWithGoogle();
+  if (user) {
+    if (nick) user.displayName = nick;
+    handleUserLoggedIn(user);
+  }
+};
+
 function updateUI() {
   sanitizeProfile();
 
@@ -176,79 +195,65 @@ function initUIEventListeners() {
 
   const btnAnon = document.getElementById('btnAnonLogin');
   if (btnAnon) {
-    btnAnon.addEventListener('click', async () => {
-      const nickInput = document.getElementById('nicknameInput');
-      const nick = nickInput ? nickInput.value.trim() : '한글도전자';
-      const user = await loginAnonymously();
-      user.displayName = nick || '한글도전자';
-      handleUserLoggedIn(user);
-    });
+    btnAnon.onclick = window.startGuestLogin;
   }
 
   const btnGoogle = document.getElementById('btnGoogleLogin');
   if (btnGoogle) {
-    btnGoogle.addEventListener('click', async () => {
-      const nickInput = document.getElementById('nicknameInput');
-      const nick = nickInput ? nickInput.value.trim() : '한글도전자';
-      const user = await loginWithGoogle();
-      if (user) {
-        if (nick) user.displayName = nick;
-        handleUserLoggedIn(user);
-      }
-    });
+    btnGoogle.onclick = window.startGoogleLogin;
   }
 
   document.querySelectorAll('.btn-back-lobby').forEach(btn => {
-    btn.addEventListener('click', () => showScreen('lobbyScreen'));
+    btn.onclick = () => showScreen('lobbyScreen');
   });
 
   const b1 = document.getElementById('btnGame1');
-  if (b1) b1.addEventListener('click', () => startGame1());
+  if (b1) b1.onclick = () => startGame1();
 
   const b2 = document.getElementById('btnGame2');
-  if (b2) b2.addEventListener('click', () => startGame2());
+  if (b2) b2.onclick = () => startGame2();
 
   const b3 = document.getElementById('btnGame3');
-  if (b3) b3.addEventListener('click', () => startGame3());
+  if (b3) b3.onclick = () => startGame3();
 
   const bossB = document.getElementById('btnBossBattle');
   if (bossB) {
-    bossB.addEventListener('click', () => {
+    bossB.onclick = () => {
       if (!isBossUnlocked(currentUser.collectedTokens)) {
         showModal("보스전 잠김 👑", "5개 한글 자음 토큰(`ㄱ,ㄴ,ㄷ,ㄹ,ㅁ`)을 모두 모아야 세종대왕에게 도전할 수 있습니다!");
         return;
       }
       startBossBattle();
-    });
+    };
   }
 
   const hallB = document.getElementById('btnHallOfFame');
-  if (hallB) hallB.addEventListener('click', () => renderHallOfFame('tokens'));
+  if (hallB) hallB.onclick = () => renderHallOfFame('tokens');
 
   const tabT = document.getElementById('tabTokens');
   if (tabT) {
-    tabT.addEventListener('click', (e) => {
+    tabT.onclick = (e) => {
       document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
       e.target.classList.add('active');
       renderHallOfFame('tokens');
-    });
+    };
   }
 
   const tabC = document.getElementById('tabClears');
   if (tabC) {
-    tabC.addEventListener('click', (e) => {
+    tabC.onclick = (e) => {
       document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
       e.target.classList.add('active');
       renderHallOfFame('clears');
-    });
+    };
   }
 
   const modalC = document.getElementById('modalBtnClose');
   if (modalC) {
-    modalC.addEventListener('click', () => {
+    modalC.onclick = () => {
       const modal = document.getElementById('modalOverlay');
       if (modal) modal.style.display = 'none';
-    });
+    };
   }
 }
 
